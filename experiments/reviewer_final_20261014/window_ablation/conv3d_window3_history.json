@@ -1,0 +1,17 @@
+{
+  "window_days": 3,
+  "status": "running",
+  "epochs_completed": 1,
+  "best_epoch": 1,
+  "best_validation_loss": 0.038499183223947235,
+  "seed": 42,
+  "batch_size": 16,
+  "loss": "ExtremeWeightedMSE; training-only p95; weight=5",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.21782919238403178,
+      "validation_loss": 0.038499183223947235
+    }
+  ]
+}

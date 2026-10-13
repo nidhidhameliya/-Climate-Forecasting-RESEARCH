@@ -1,0 +1,25 @@
+{
+  "coordinate_latitude": 35.0,
+  "coordinate_longitude": 65.0,
+  "hourly_records": 8760,
+  "hourly_finite": true,
+  "daily_records_checked": 365,
+  "hourly_24h_max_matches_daily_max": true,
+  "max_abs_difference_K": 0.0,
+  "forecast_samples": 358,
+  "forecast_target_dates": [
+    "2025-01-08",
+    "2025-12-31"
+  ],
+  "last_input_day_matches_daily_series_max_abs_difference_C": 1.9073486328125e-06,
+  "targets_match_daily_series_max_abs_difference_C": 1.9073486328125e-06,
+  "largest_abs_error": {
+    "target_date": "2025-02-11",
+    "previous_input_date": "2025-02-10",
+    "previous_input_tmax_C": -1.920654296875,
+    "observed_target_tmax_C": -10.193449020385742,
+    "predicted_tmax_C": 4.100568771362305,
+    "absolute_error_C": 14.294017791748047
+  },
+  "conv3d_selected_checkpoint": "experiments/reviewer_final_20261014/convlstm_best.pth"
+}

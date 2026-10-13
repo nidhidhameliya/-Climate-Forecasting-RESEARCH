@@ -52,10 +52,10 @@ class ClimateModelEvaluator:
             raise FileNotFoundError(f"Model not found at {self.model_path}")
         
         model = ConvLSTMModel(self.config)
-        model.load_state_dict(torch.load(self.model_path, map_location=self.device))
+        model.load_state_dict(torch.load(self.model_path, map_location=self.device, weights_only=True))
         model.to(self.device)
         model.eval()
-        print(f"✓ Model loaded from {self.model_path}")
+        print(f"Model loaded from {self.model_path}")
         return model
     
     def denormalize(self, normalized_data):

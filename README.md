@@ -5,14 +5,14 @@
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)
 ![Dataset](https://img.shields.io/badge/Dataset-ERA5-green.svg)
-![Deep Learning](https://img.shields.io/badge/Model-ConvLSTM-orange.svg)
+![Deep Learning](https://img.shields.io/badge/Model-Conv3D-orange.svg)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-brightgreen?logo=streamlit)](https://climate-forecasting-9mfng65j47sierrx5jm6pe.streamlit.app/)
 
 ---
 
 # 📖 Climate Temperature Forecasting
 
-A deep learning framework for **next-day temperature forecasting** using the **ERA5 Climate Reanalysis Dataset** and **Convolutional Long Short-Term Memory (ConvLSTM)** networks.
+A research pipeline for **next-day ERA5 2 m temperature forecasting**. The proposed class named `ConvLSTMModel` is implemented as a **Conv3D encoder-decoder**, not a recurrent ConvLSTM.
 
 The project provides a complete end-to-end pipeline for:
 
@@ -57,7 +57,7 @@ Climate temperature prediction is essential for agriculture, disaster management
 
 Traditional numerical weather prediction methods require significant computational resources and may struggle to accurately capture localized temperature variations over space and time.
 
-This project introduces a **ConvLSTM-based spatiotemporal deep learning framework** that learns both spatial and temporal dependencies directly from historical ERA5 climate observations.
+The proposed model is a 3D convolutional encoder-decoder over seven daily temperature maps. Separate LSTM, CNN-LSTM, and Transformer implementations are included as comparison models.
 
 The framework automates the complete forecasting pipeline, including:
 
@@ -68,95 +68,48 @@ The framework automates the complete forecasting pipeline, including:
 
 ## Research Status
 
-The repository is currently **not publication-ready**. The raw ERA5 files and
-the regenerated regional subset have finite `t2m` values, but the downstream
-daily NetCDF rebuild is still blocked by a Windows NetCDF/HDF5 file-write
-problem. Until daily files, normalization statistics, and sequence tensors are
-rebuilt in one successful run, no benchmark value should be described as a
-final paper result.
-
-The authoritative reviewer audit is [research.md](research.md). It records the
-reviewer-by-reviewer status and separates verified facts from provisional
-artifacts.
+The raw source, hourly splits, daily files, normalization, and seven-day tensors have passed the recorded preprocessing validation. The old `daily_resampled.nc` remains all-NaN and is excluded. Validation/test value equality to the source is still unverified.
 
 ## Verified Dataset Definition
 
-- Raw ERA5 coverage: 2019-01-01 00:00 through 2025-12-31 23:00
-- Variable: hourly 2-meter air temperature (`t2m`), in Kelvin
-- Study region: 5°N to 35°N and 65°E to 100°E
-- Grid: 121 × 141 at 0.25° resolution
-- Configured split: train 2019–2023, validation 2024, test 2025
-- Input window: 7 daily fields; forecast horizon: 1 day
-- Aggregation: daily maximum, as implemented in `preprocessing/resample_time.py`
+- Raw ERA5 coverage: 2019-01-01 00:00 through 2025-12-31 23:00 UTC.
+- Variable: hourly 2 m temperature (`t2m`), in Kelvin.
+- Study region: 5?35?N and 65?100?E; 121?141 grid at 0.25? resolution.
+- Splits: train 2019?2023, validation 2024, test 2025.
+- Daily aggregation: maximum of 24 hourly observations.
+- Input window: 7 daily fields; forecast horizon: 1 day.
+- Training-only normalization: mean 25.044549 ?C, population std 10.995944 ?C.
+- Training-only 95th-percentile threshold: 37.254114 ?C, normalized threshold 1.110370, loss weight 5.
 
-## Provisional Artifact Metrics
+## Corrected Five-Model Results
 
-The following values are preserved from the previously saved checkpoint and
-test arrays. They are reproducible artifact values, not final research metrics,
-because the saved normalization artifact currently contains non-finite
-statistics and the raw-derived preprocessing chain has not completed
-successfully.
+Each learned model ran for 50 epochs on the RTX 4070 (seed 42, batch 16, Adam, learning rate 1e-4). Checkpoints were selected by validation loss; test metrics were computed after selection. Errors are in ?C.
 
-| Model | Test RMSE | Test MAE | Test R² | Test correlation |
-|-------|------------|----------|---------|------------------|
-| Persistence | 1.1277 | 0.9304 | 0.9794 | 0.9897 |
-| Saved Conv3D encoder-decoder checkpoint | 1.8823 | 1.6127 | 0.9425 | 0.9720 |
+| Model | Parameters | Epochs | Best epoch | Validation RMSE | Validation MAE | Test RMSE | Test MAE | Test R? | Test Pearson r |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Persistence | 0 | 0 | ? | 1.39769 | 0.89506 | 1.40272 | 0.89750 | 0.981867 | 0.990937 |
+| LSTM | 4,513 | 50 | 50 | 1.55170 | 1.00950 | 1.57273 | 1.01608 | 0.977206 | 0.988568 |
+| CNN-LSTM | 18,049 | 50 | 48 | 1.39959 | 0.89962 | 1.40052 | 0.89867 | 0.981924 | 0.990928 |
+| Conv3D encoder-decoder (`ConvLSTMModel`) | 29,441 | 50 | 39 | 1.35666 | 0.87306 | 1.36491 | 0.87453 | 0.982832 | 0.991407 |
+| Transformer | 275,105 | 50 | 36 | 1.39792 | 0.89565 | 1.40302 | 0.89871 | 0.981860 | 0.990936 |
 
-The class named `ConvLSTMModel` is implemented as a Conv3D encoder-decoder,
-not an LSTM-cell model. It has two 3 × 3 × 3 encoder convolutions with 32
-hidden channels, one decoder convolution, ReLU activations, and 29,441
-trainable parameters. These artifact metrics do not establish superiority over
-persistence. Independent station or operational forecast validation is not
-included.
+The Conv3D encoder-decoder had the lowest RMSE and MAE on this test year and modestly outperformed persistence. This is one seed and one temporal split; independent station/operational validation and the learned 3/7/14-day ablation remain pending. Full histories, checkpoints, and aggregate CSV/JSON are in `experiments/reviewer_final_20261014/`.
 
-## Regenerating Reviewer Outputs
+## Reproduction
 
-After the preprocessing artifacts are successfully rebuilt and verified, run:
-
-```bash
-python -m preprocessing.subset_region
-python -m preprocessing.split_by_year
-python -m preprocessing.resample_time
-python -m preprocessing.normalize
-python -m preprocessing.create_sequences
-python reviewer_analysis.py
-python run_baseline_experiments.py --epochs 1 --batch-size 1 --device cpu
+```powershell
+.\.venv\Scripts\python.exe -u preprocessingebuild_downstream.py
+.\.venv\Scripts\python.exe -u verify_preprocessing.py
+.\.venv\Scripts\python.exe -u preprocessing\compute_extremes.py
+.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 50 --batch-size 16 --seed 42 --device cuda --models persistence,lstm,cnn_lstm,convlstm,transformer --output-dir experiments
+ew_run
 ```
 
-The analysis script writes metadata, metrics, seasonal and regional tables,
-and spatial error maps to `outputs/reviewer_revision/`. Do not update the
-metrics table above with new values until `mean_std.json`, all NumPy arrays,
-and all sequence tensors pass finite-value checks.
-
-### Current Reviewer Closure
-
-- Reviewer 1: study region and architecture are **DONE**; dates, leakage,
-  normalization, and figures remain **PARTIAL** pending the rebuild.
-- Reviewer 2: t2m scope and metric definitions are **DONE**; baselines and
-  seasonal/regional/spatial analysis remain **PARTIAL**.
-- Reviewer 3: independent validation is **NOT DONE**; citations, literature
-  comparison, Figure 3 explanation, and conclusion moderation remain
-  **PARTIAL**.
-
-The full evidence and unresolved items are maintained in
-[research.md](research.md).
-| Provider | ECMWF (Copernicus C3S) |
-| Variable | 2-meter Air Temperature (`t2m`) |
-| Temporal Resolution | Hourly (Resampled to Daily) |
-| Spatial Coverage | Global (Region Subset) |
-| Data Format | NetCDF (`.nc`) |
-| Default Study Region | India |
-| Download Method | CDS API |
-
-> **Note:** The ERA5 dataset is not included in this repository because of its large size. Data can be downloaded using the provided preprocessing scripts.
-
----
+Detailed evidence and a point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md); command outcomes are in [terminal_outputs.md](terminal_outputs.md).
 
 # 🔬 Methodology
 
-The forecasting framework is based on a **Convolutional Long Short-Term Memory (ConvLSTM)** architecture.
-
-Unlike traditional LSTMs, ConvLSTM replaces fully connected operations with convolutional operations, enabling the network to preserve spatial information while simultaneously learning temporal dependencies.
+The proposed implementation is a **Conv3D encoder-decoder**. It permutes `(B, 7, 1, 121, 141)` to Conv3D order `(B, 1, 7, 121, 141)`, applies two 3?3?3 Conv3D/ReLU layers with 32 channels and a 3?3?3 Conv3D decoder, then selects the last temporal index. It has 29,441 trainable parameters and no recurrent gates or cell state. The `convlstm` config value remains a compatibility alias; it does not describe the architecture.
 
 The overall methodology consists of:
 
@@ -165,7 +118,7 @@ The overall methodology consists of:
 3. Convert hourly observations into daily maxima (as implemented in `preprocessing/resample_time.py`)
 4. Normalize temperature values
 5. Generate sliding-window sequences
-6. Train the ConvLSTM model
+6. Train the Conv3D encoder-decoder
 7. Predict next-day temperature maps
 8. Evaluate prediction accuracy
 9. Visualize forecasting results
@@ -185,93 +138,9 @@ observations remain important future work.
 
 # 📊 Results
 
-## Current Research Status
+## Reviewer Evidence
 
-The project is currently **not publication-ready**. The raw ERA5 files,
-regional subset, and hourly train/validation/test split files have verified
-finite `t2m` values. The daily resampling stage is still blocked by a Windows
-NetCDF/HDF5 write or file-lock problem, so the normalized arrays, sequence
-tensors, benchmarks, and reviewer figures have not been regenerated from the
-raw-derived pipeline.
-
-The authoritative reviewer audit is [research.md](research.md). It separates
-verified repository facts from provisional saved artifacts and records the
-reviewer-by-reviewer closure status.
-
-## Verified Dataset Definition
-
-- Raw ERA5 coverage: 2019-01-01 00:00 through 2025-12-31 23:00
-- Variable: hourly 2-meter air temperature (`t2m`), in Kelvin
-- Study region: 5°N to 35°N and 65°E to 100°E
-- Grid: 121 × 141 at 0.25° resolution
-- Configured split: train 2019–2023, validation 2024, test 2025
-- Input window: 7 daily fields; forecast horizon: 1 day
-- Aggregation: daily maximum, as implemented in `preprocessing/resample_time.py`
-
-## Reviewer Revision Evidence
-
-The repository includes an artifact-backed audit in
-`reviewer_analysis.py`. Run it from the project root with:
-
-```bash
-python reviewer_analysis.py
-```
-
-It writes verified metadata, model metrics, seasonal and regional tables, and
-latitude/longitude spatial error maps to `outputs/reviewer_revision/`.
-
-Verified from the checked-in daily files:
-
-- Study grid: latitude 5°N to 35°N and longitude 65°E to 100°E, with a 121 ×
-      141 grid. The repository does not contain a separate scientific rationale
-      for selecting this rectangle; that rationale must be added to the paper.
-- The configured chronology is train 2019-2023, validation 2024, and test
-      2025. Final sequence counts and target dates are not reportable until the
-      daily files and normalized tensors are regenerated successfully.
-- The class named `ConvLSTMModel` is implemented as a three-layer Conv3D
-      encoder/decoder: two 3 × 3 × 3 convolutions with 32 hidden channels and a
-      one-channel 3 × 3 × 3 decoder, ReLU after the encoder convolutions, no
-      dropout, and 29,441 trainable parameters. It is not an LSTM-cell
-      implementation.
-- The sequence generator creates each split independently, so a sequence does
-      not cross a split boundary. This must be reverified after the successful
-      raw-derived rebuild.
-- The current preprocessing code uses a training-split scalar z-score and
-      replaces remaining non-finite values with zero. The saved normalization
-      statistic `296.488...` is Kelvin-scale while the current script computes
-      statistics after Kelvin-to-Celsius conversion, so the preprocessing outputs
-      should be regenerated before publication.
-
-The saved artifact checkpoint gives correlation `0.9720` and R² `0.9425`; these
-are different statistics, not an inconsistency in the recalculation. On that
-provisional test artifact, persistence is stronger than the checkpoint (RMSE
-`1.128` versus `1.882`), so no superiority claim is justified. These values
-must not be presented as final paper metrics because the current normalization
-artifact contains non-finite statistics. Independent station or operational
-forecast comparisons are not included in the repository.
-
-The checked-in checkpoint supports a reproducible next-day grid forecast
-evaluation, but the current evidence does not establish superiority over a
-simple persistence baseline.
-
-### Evaluation Metrics
-
-| Model | Test RMSE | Test MAE | Test R² | Test correlation |
-|-------|------------|----------|---------|------------------|
-| Persistence | 1.1277 | 0.9304 | 0.9794 | 0.9897 |
-| Saved Conv3D encoder-decoder checkpoint | 1.8823 | 1.6127 | 0.9425 | 0.9720 |
-
-### Highlights
-
-- ✅ Reproducible next-day spatial evaluation
-- ✅ Seasonal, regional, and grid-cell error artifacts
-- ⚠️ Persistence is stronger than the saved checkpoint on the checked-in test set
-- ⚠️ Full baseline comparisons must be rerun after preprocessing succeeds
-- ⚠️ Independent station or operational forecast validation is not yet available
-
-> **Prediction maps, evaluation graphs, and additional performance metrics are available in the `outputs/` directory.**
->
-> ---
+The current data audit, metric definitions, unresolved source-equality checks, high-error point trace, and point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md). Historical metric tables in older notes are not results of the corrected run.
 
 # 📂 Project Structure
 
@@ -412,7 +281,7 @@ The configuration includes:
 | Batch Size | Training batch size |
 | Learning Rate | Optimizer learning rate |
 | Epochs | Maximum training epochs |
-| Model | ConvLSTM / CNN-LSTM / Transformer |
+| Model | Conv3D encoder-decoder / LSTM / CNN-LSTM / Transformer |
 | Device | CUDA or CPU |
 
 ---
@@ -545,27 +414,19 @@ The project supports multiple deep learning architectures for spatiotemporal for
 
 ---
 
-## 1. ConvLSTM (Recommended)
+## 1. Conv3D Encoder-Decoder (Proposed)
 
-**Architecture**
-
-Convolutional Long Short-Term Memory
-
-**Advantages**
-
-- Learns spatial and temporal dependencies simultaneously
-- High prediction accuracy
-- Efficient training
-- Ideal for temperature forecasting
-
-**Configuration**
+The class is named `ConvLSTMModel` and selected with the compatibility value `model.name: convlstm`; internally it is three Conv3D layers with ReLU after the first two. It is not a genuine ConvLSTM. In the corrected 50-epoch run it achieved test RMSE 1.364915 ?C and MAE 0.874530 ?C, selected at epoch 39 by validation loss.
 
 ```yaml
 model:
   name: convlstm
+  hidden_dim: 32
 ```
 
 ---
+
+## 2. CNN-LSTM
 
 ## 2. CNN-LSTM
 
@@ -611,17 +472,14 @@ model:
 
 ## Model Comparison
 
-| Feature | ConvLSTM | CNN-LSTM | Transformer |
-|----------|----------|----------|-------------|
-| Spatial Learning | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| Temporal Learning | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Memory Usage | Low | Medium | High |
-| Training Speed | Fast | Medium | Medium |
-| Long-Term Dependencies | Good | Good | Excellent |
-| Recommended | ✅ Yes | Yes | Research |
+| Model name | Implemented structure | Trainable parameters |
+|---|---|---:|
+| `convlstm` | Conv3D encoder-decoder; no recurrence | 29,441 |
+| `lstm` | Shared per-grid-cell LSTM | 4,513 |
+| `cnn_lstm` | Per-day CNN, pooled temporal LSTM, spatial decoder | 18,049 |
+| `transformer` | Pooled temporal Transformer encoder with spatial skip | 275,105 |
 
-> **ConvLSTM is the default and recommended model for this project due to its balance of prediction accuracy and computational efficiency.**
-> ---
+Use the measured validation/test results above; no architecture is claimed to be universally best.
 
 # 💻 Usage
 
@@ -631,7 +489,7 @@ After completing the installation and preprocessing steps, you can train, evalua
 
 ## 🚀 Train the Model
 
-Train the default ConvLSTM model using the configuration specified in `config.yaml`.
+Train the configured Conv3D encoder-decoder. The `convlstm` model identifier remains for code compatibility.
 
 ```bash
 python main.py
@@ -1010,7 +868,7 @@ The project is continuously evolving with additional models, optimization techni
 
 - [x] ERA5 Climate Data Integration
 - [x] Automated Data Preprocessing Pipeline
-- [x] ConvLSTM Model Implementation
+- [x] Conv3D encoder-decoder implementation (not recurrent ConvLSTM)
 - [x] Model Training & Validation Pipeline
 - [x] Temperature Prediction
 - [x] Model Evaluation Metrics
@@ -1054,7 +912,7 @@ The project is continuously evolving with additional models, optimization techni
 | Input Sequence Length | 7 Days |
 | Forecast Horizon | Next Day |
 | Framework | PyTorch |
-| Primary Model | ConvLSTM |
+| Proposed Implementation | Conv3D encoder-decoder (`ConvLSTMModel`) |
 | Spatial Resolution | 121 × 141 Grid |
 | Data Format | NetCDF (.nc) |
 
@@ -1095,7 +953,7 @@ If you use this repository in your research or publications, please cite it as:
 ```bibtex
 @software{ClimateForecasting2026,
   author = {Nidhi Dhameliya},
-  title = {AI-Powered Climate Temperature Forecasting using ConvLSTM},
+  title = {AI-Powered Climate Temperature Forecasting using a Conv3D Encoder-Decoder},
   year = {2026},
   publisher = {GitHub},
   url = {https://github.com/your-username/your-repository}
