@@ -1,0 +1,22 @@
+{
+  "completed_results": [
+    {
+      "model": "Persistence",
+      "class": "last-input-day",
+      "trainable_parameters": 0,
+      "epochs": 0,
+      "validation": {
+        "rmse": 1.397688681160644,
+        "mae": 0.89505535364151,
+        "r2": 0.9830864667892456,
+        "correlation": 0.991543251362402
+      },
+      "test": {
+        "rmse": 1.402715734593257,
+        "mae": 0.8974984288215637,
+        "r2": 0.9818674921989441,
+        "correlation": 0.9909366819576584
+      }
+    }
+  ]
+}

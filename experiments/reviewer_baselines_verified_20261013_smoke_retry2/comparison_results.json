@@ -1,0 +1,57 @@
+{
+  "protocol": {
+    "sequence_length": 7,
+    "forecast_horizon_days": 1,
+    "train_samples": 1819,
+    "validation_samples": 359,
+    "test_samples": 358,
+    "spatial_shape": [
+      121,
+      141
+    ],
+    "device": "cuda:0",
+    "seed": 42,
+    "metric_space": "same denormalized stored temperature scale for every model",
+    "normalization_unit": "degrees_Celsius",
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_runtime": "12.1",
+    "run_timestamp_utc": "2026-10-13T18:29:20.571251+00:00",
+    "epochs_requested": 1,
+    "output_directory": "C:\\Users\\25mdsml006\\Desktop\\deep_learning\\project\\climate\\climate2\\experiments\\reviewer_baselines_verified_20261013_smoke_retry2"
+  },
+  "results": [
+    {
+      "model": "convlstm",
+      "class": "ConvLSTMModel",
+      "trainable_parameters": 29441,
+      "epochs": 1,
+      "batch_size": 16,
+      "optimizer": "Adam",
+      "learning_rate": 0.0001,
+      "loss": "ExtremeWeightedMSE",
+      "training_seconds": 10.567,
+      "best_epoch": 1,
+      "best_validation_loss": 0.08835883309011874,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.37484744021244215,
+          "validation_loss": 0.08835883309011874
+        }
+      ],
+      "validation": {
+        "rmse": 1.9353584020718784,
+        "mae": 1.2467384338378906,
+        "r2": 0.9675708413124084,
+        "correlation": 0.9837510867777218
+      },
+      "test": {
+        "rmse": 1.9316340833038244,
+        "mae": 1.2535701990127563,
+        "r2": 0.9656150341033936,
+        "correlation": 0.9828383553043664
+      },
+      "checkpoint": "experiments\\reviewer_baselines_verified_20261013_smoke_retry2\\convlstm_best.pth"
+    }
+  ]
+}

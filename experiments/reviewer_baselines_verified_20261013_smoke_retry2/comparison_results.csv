@@ -1,0 +1,2 @@
+model,trainable_parameters,test_rmse,test_mae,test_r2,test_correlation
+convlstm,29441,1.9316340833038244,1.2535701990127563,0.9656150341033936,0.9828383553043664

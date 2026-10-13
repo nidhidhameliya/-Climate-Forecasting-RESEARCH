@@ -1,0 +1,14 @@
+{
+  "top_5_percent_celsius": 37.25411376953127,
+  "bottom_5_percent_celsius": -1.7535766601562273,
+  "quantile_method": "NumPy linear quantile (Hyndman-Fan Type 7)",
+  "scope": "training split only; daily maximum t2m over all grid cells and days",
+  "training_daily_records": 1826,
+  "training_grid_values": 31153386,
+  "training_date_range": [
+    "2019-01-01",
+    "2023-12-31"
+  ],
+  "input": "data/interim/train_daily.nc (t2m in K)",
+  "loss_weight": 5.0
+}

@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import json
+import math
 
 
 class ExtremeWeightedMSE(nn.Module):
@@ -12,29 +13,23 @@ class ExtremeWeightedMSE(nn.Module):
     ):
         super(ExtremeWeightedMSE, self).__init__()
 
-        # Default values (in case files don't exist)
-        self.threshold = 0.0
-        self.extreme_weight = extreme_weight
+        with open(threshold_path, "r", encoding="utf-8") as f:
+            thresholds = json.load(f)
+        with open(stats_path, "r", encoding="utf-8") as f:
+            stats = json.load(f)
 
-        # Load thresholds if available
-        try:
-            with open(threshold_path, "r") as f:
-                thresholds = json.load(f)
+        threshold_celsius = float(thresholds["top_5_percent_celsius"])
+        mean = float(stats["mean"])
+        std = float(stats["std"])
+        if not all(math.isfinite(value) for value in (threshold_celsius, mean, std)) or std <= 0:
+            raise ValueError("Extreme threshold and normalization stats must be finite; std must be positive")
+        if stats.get("unit") != "degrees_Celsius":
+            raise ValueError(f"Expected Celsius normalization stats, got {stats.get('unit')!r}")
 
-            with open(stats_path, "r") as f:
-                stats = json.load(f)
-
-            threshold_celsius = thresholds["top_5_percent_celsius"]
-            mean = stats["mean"]
-            std = stats["std"]
-
-            # Convert threshold to normalized space
-            self.threshold = (threshold_celsius - mean) / std
-
-        except Exception as e:
-            print("⚠️ Warning: Could not load threshold/stat files.")
-            print("Using default threshold = 0.")
-            print("Error:", e)
+        # The target tensors are z-scored Celsius. Convert the training-only
+        # Celsius quantile to this same normalized space.
+        self.threshold = (threshold_celsius - mean) / std
+        self.extreme_weight = float(extreme_weight)
 
     def forward(self, preds, targets):
 

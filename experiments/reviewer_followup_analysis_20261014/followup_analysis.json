@@ -1,0 +1,183 @@
+{
+  "status": "smoke-checkpoint diagnostic only; one epoch; not a final model result",
+  "checkpoint": "experiments\\reviewer_baselines_verified_20261013_smoke_retry2\\convlstm_best.pth",
+  "device": "cuda:0",
+  "dates": {
+    "first_target": "2025-01-08",
+    "last_target": "2025-12-31",
+    "samples": 358
+  },
+  "normalization": {
+    "mean_C": 25.044549020486595,
+    "std_C": 10.99594436868629,
+    "inverse": "normalized * std + mean_C"
+  },
+  "convlstm_smoke_aligned_test": {
+    "rmse_C": 1.9316340833038244,
+    "mae_C": 1.2535701990127563,
+    "r2": 0.9656150341033936,
+    "pearson_r": 0.9828383553043664,
+    "n_grid_values": 6107838
+  },
+  "persistence_same_358_targets": {
+    "rmse_C": 1.402715734593257,
+    "mae_C": 0.8974984288215637,
+    "r2": 0.9818674921989441,
+    "pearson_r": 0.9909366819576584,
+    "n_grid_values": 6107838
+  },
+  "common_351_targets_for_7_vs_14_day_window": {
+    "dates": [
+      "2025-01-15",
+      "2025-12-31"
+    ],
+    "convlstm_smoke": {
+      "rmse_C": 1.9178128616161108,
+      "mae_C": 1.2467663288116455,
+      "r2": 0.9655699133872986,
+      "pearson_r": 0.9828043868463423,
+      "n_grid_values": 5988411
+    },
+    "persistence": {
+      "rmse_C": 1.3958533935623685,
+      "mae_C": 0.8927555084228516,
+      "r2": 0.9817607998847961,
+      "pearson_r": 0.9908822105711548,
+      "n_grid_values": 5988411
+    }
+  },
+  "persistence_by_window": {
+    "3": {
+      "input_days": 3,
+      "sequences": 362,
+      "target_start": "2025-01-04",
+      "target_end": "2025-12-31",
+      "metrics": {
+        "rmse_C": 1.40705530632165,
+        "mae_C": 0.8996703028678894,
+        "r2": 0.98185133934021,
+        "pearson_r": 0.9909223678754122,
+        "n_grid_values": 6176082
+      }
+    },
+    "7": {
+      "input_days": 7,
+      "sequences": 358,
+      "target_start": "2025-01-08",
+      "target_end": "2025-12-31",
+      "metrics": {
+        "rmse_C": 1.402715734593257,
+        "mae_C": 0.8974984288215637,
+        "r2": 0.9818674921989441,
+        "pearson_r": 0.9909366819576584,
+        "n_grid_values": 6107838
+      }
+    },
+    "14": {
+      "input_days": 14,
+      "sequences": 351,
+      "target_start": "2025-01-15",
+      "target_end": "2025-12-31",
+      "metrics": {
+        "rmse_C": 1.3958533935623685,
+        "mae_C": 0.8927555084228516,
+        "r2": 0.9817607998847961,
+        "pearson_r": 0.9908822105711548,
+        "n_grid_values": 5988411
+      }
+    }
+  },
+  "seasonal_errors": {
+    "DJF": {
+      "target_days": 83,
+      "start": "2025-01-08",
+      "end": "2025-12-31",
+      "convlstm_smoke": {
+        "rmse_C": 2.098955657679617,
+        "mae_C": 1.2979778051376343,
+        "r2": 0.9691735506057739,
+        "pearson_r": 0.9850281890338711,
+        "n_grid_values": 1416063
+      },
+      "persistence": {
+        "rmse_C": 1.346496215449531,
+        "mae_C": 0.8535273671150208,
+        "r2": 0.9873139262199402,
+        "pearson_r": 0.993653923770298,
+        "n_grid_values": 1416063
+      }
+    },
+    "MAM": {
+      "target_days": 92,
+      "start": "2025-03-01",
+      "end": "2025-05-31",
+      "convlstm_smoke": {
+        "rmse_C": 2.101279087171682,
+        "mae_C": 1.3812607526779175,
+        "r2": 0.967008113861084,
+        "pearson_r": 0.9833824486439597,
+        "n_grid_values": 1569612
+      },
+      "persistence": {
+        "rmse_C": 1.532961764441708,
+        "mae_C": 0.9953769445419312,
+        "r2": 0.9824408888816833,
+        "pearson_r": 0.9912635992758756,
+        "n_grid_values": 1569612
+      }
+    },
+    "JJA": {
+      "target_days": 92,
+      "start": "2025-06-01",
+      "end": "2025-08-31",
+      "convlstm_smoke": {
+        "rmse_C": 1.7727339100880177,
+        "mae_C": 1.205788493156433,
+        "r2": 0.938392698764801,
+        "pearson_r": 0.9688604551293089,
+        "n_grid_values": 1569612
+      },
+      "persistence": {
+        "rmse_C": 1.4426978302537734,
+        "mae_C": 0.9303814172744751,
+        "r2": 0.9591966271400452,
+        "pearson_r": 0.9796631118353859,
+        "n_grid_values": 1569612
+      }
+    },
+    "SON": {
+      "target_days": 91,
+      "start": "2025-09-01",
+      "end": "2025-11-30",
+      "convlstm_smoke": {
+        "rmse_C": 1.7376725749204351,
+        "mae_C": 1.1322797536849976,
+        "r2": 0.9661219716072083,
+        "pearson_r": 0.9835794703622082,
+        "n_grid_values": 1552551
+      },
+      "persistence": {
+        "rmse_C": 1.2676773385130256,
+        "mae_C": 0.8054052591323853,
+        "r2": 0.9819698333740234,
+        "pearson_r": 0.9909699834801275,
+        "n_grid_values": 1552551
+      }
+    }
+  },
+  "spatial_errors": {
+    "gridpoint_rmse_min_C": 0.3927178680896759,
+    "gridpoint_rmse_mean_C": 1.5735880136489868,
+    "gridpoint_rmse_max_C": 14.547075271606445,
+    "worst_gridpoint": {
+      "latitude": 35.0,
+      "longitude": 65.0,
+      "rmse_C": 14.547075271606445
+    },
+    "latitude_band_rmse_min_mean_C": 0.60642409324646,
+    "latitude_band_rmse_max_mean_C": 8.042935371398926,
+    "longitude_band_rmse_min_mean_C": 1.4341247081756592,
+    "longitude_band_rmse_max_mean_C": 4.851344585418701
+  },
+  "protocol_note": "All global metrics flatten identical aligned grid cells; 7-day model target dates align with test_X/test_y. Persistence uses the last input day. 3/7/14 persistence rows have different natural target ranges; common 351-date comparison is separately provided."
+}

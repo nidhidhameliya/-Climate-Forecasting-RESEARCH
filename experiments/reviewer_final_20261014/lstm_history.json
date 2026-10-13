@@ -1,0 +1,44 @@
+{
+  "model": "lstm",
+  "status": "running",
+  "requested_epochs": 50,
+  "completed_epochs": 6,
+  "best_epoch": 6,
+  "best_validation_loss": 0.09810127131640911,
+  "batch_size": 16,
+  "optimizer": "Adam",
+  "learning_rate": 0.0001,
+  "loss": "ExtremeWeightedMSE",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.3573862633161378,
+      "validation_loss": 1.2810013916181482
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.1235654207698085,
+      "validation_loss": 0.9904481587202653
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.7869884078962761,
+      "validation_loss": 0.5867152952629587
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.4248910874389766,
+      "validation_loss": 0.2730327737720116
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.19815530595287942,
+      "validation_loss": 0.1317222818084385
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.11756740422233154,
+      "validation_loss": 0.09810127131640911
+    }
+  ]
+}
