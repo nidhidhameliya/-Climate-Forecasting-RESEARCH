@@ -1,0 +1,122 @@
+{
+  "device": "cuda:0",
+  "checkpoint_checks": [
+    {
+      "model": "lstm",
+      "checkpoint": "experiments\\reviewer_lstm_repaired_20261014\\lstm_best.pth",
+      "checkpoint_metrics_match_aggregate": true,
+      "splits": {
+        "val": {
+          "metrics": {
+            "rmse": 1.5516975059818168,
+            "mae": 1.0094974040985107,
+            "r2": 0.9791538119316101,
+            "correlation": 0.989547752322213
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 359
+        },
+        "test": {
+          "metrics": {
+            "rmse": 1.5727305607453141,
+            "mae": 1.0160795450210571,
+            "r2": 0.9772056341171265,
+            "correlation": 0.9885678464754004
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 358
+        }
+      }
+    },
+    {
+      "model": "cnn_lstm",
+      "checkpoint": "experiments\\reviewer_final_20261014\\cnn_lstm_best.pth",
+      "checkpoint_metrics_match_aggregate": true,
+      "splits": {
+        "val": {
+          "metrics": {
+            "rmse": 1.3995886385651402,
+            "mae": 0.8996180891990662,
+            "r2": 0.983040452003479,
+            "correlation": 0.9914921169138822
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 359
+        },
+        "test": {
+          "metrics": {
+            "rmse": 1.4005166479889664,
+            "mae": 0.8986677527427673,
+            "r2": 0.981924295425415,
+            "correlation": 0.9909284355087896
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 358
+        }
+      }
+    },
+    {
+      "model": "convlstm",
+      "checkpoint": "experiments\\reviewer_final_20261014\\convlstm_best.pth",
+      "checkpoint_metrics_match_aggregate": true,
+      "splits": {
+        "val": {
+          "metrics": {
+            "rmse": 1.3566575787135982,
+            "mae": 0.8730589151382446,
+            "r2": 0.9840649366378784,
+            "correlation": 0.9920194329075844
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 359
+        },
+        "test": {
+          "metrics": {
+            "rmse": 1.3649147980337155,
+            "mae": 0.8745298981666565,
+            "r2": 0.982831597328186,
+            "correlation": 0.991407401812537
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 358
+        }
+      }
+    },
+    {
+      "model": "transformer",
+      "checkpoint": "experiments\\reviewer_final_20261014\\transformer_best.pth",
+      "checkpoint_metrics_match_aggregate": true,
+      "splits": {
+        "val": {
+          "metrics": {
+            "rmse": 1.3979236788320364,
+            "mae": 0.8956495523452759,
+            "r2": 0.9830808043479919,
+            "correlation": 0.9915440563852548
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 359
+        },
+        "test": {
+          "metrics": {
+            "rmse": 1.4030249171256943,
+            "mae": 0.8987118005752563,
+            "r2": 0.9818595051765442,
+            "correlation": 0.9909356052009267
+          },
+          "max_abs_metric_delta": 0.0,
+          "matches_aggregate": true,
+          "samples": 358
+        }
+      }
+    }
+  ],
+  "all_match": true
+}

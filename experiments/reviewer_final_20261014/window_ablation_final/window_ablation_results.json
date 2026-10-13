@@ -1,0 +1,64 @@
+{
+  "protocol": {
+    "model": "Conv3D encoder-decoder",
+    "epochs_requested": 50,
+    "seed": 42,
+    "selection": "minimum validation loss",
+    "common_test_dates": "2025-01-15 through 2025-12-31",
+    "test_used_for_selection": false,
+    "device": "NVIDIA GeForce RTX 4070"
+  },
+  "results": [
+    {
+      "window_days": 3,
+      "epochs_completed": 50,
+      "best_epoch": 48,
+      "best_validation_loss": 0.01884219455330268,
+      "training_seconds": 258.856,
+      "common_test_dates": "2025-01-15 through 2025-12-31",
+      "common_test_samples": 351,
+      "test": {
+        "rmse_celsius": 1.3678377621439826,
+        "mae_celsius": 0.873910129070282,
+        "r2": 0.9824856519699097,
+        "pearson_r": 0.9912776328575975
+      },
+      "checkpoint": "experiments\\reviewer_final_20261014\\window_ablation_final\\conv3d_window3_best.pth",
+      "history_file": "experiments\\reviewer_final_20261014\\window_ablation_final\\conv3d_window3_history.json"
+    },
+    {
+      "window_days": 7,
+      "epochs_completed": 50,
+      "best_epoch": 41,
+      "best_validation_loss": 0.01888286520767471,
+      "training_seconds": 469.844,
+      "common_test_dates": "2025-01-15 through 2025-12-31",
+      "common_test_samples": 351,
+      "test": {
+        "rmse_celsius": 1.3612863542450517,
+        "mae_celsius": 0.8726701736450195,
+        "r2": 0.982653021812439,
+        "pearson_r": 0.9913750861139368
+      },
+      "checkpoint": "experiments\\reviewer_final_20261014\\window_ablation_final\\conv3d_window7_best.pth",
+      "history_file": "experiments\\reviewer_final_20261014\\window_ablation_final\\conv3d_window7_history.json"
+    },
+    {
+      "window_days": 14,
+      "epochs_completed": 50,
+      "best_epoch": 40,
+      "best_validation_loss": 0.018913191023536703,
+      "training_seconds": 845.78,
+      "common_test_dates": "2025-01-15 through 2025-12-31",
+      "common_test_samples": 351,
+      "test": {
+        "rmse_celsius": 1.3588287746893075,
+        "mae_celsius": 0.8683741092681885,
+        "r2": 0.9827155470848083,
+        "pearson_r": 0.9913939282383901
+      },
+      "checkpoint": "experiments\\reviewer_final_20261014\\window_ablation_final\\conv3d_window14_best.pth",
+      "history_file": "experiments\\reviewer_final_20261014\\window_ablation_final\\conv3d_window14_history.json"
+    }
+  ]
+}

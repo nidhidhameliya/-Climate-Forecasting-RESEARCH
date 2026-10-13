@@ -1,0 +1,4 @@
+window_days,epochs_completed,best_epoch,best_validation_loss,training_seconds,common_test_samples,rmse_celsius,mae_celsius,r2,pearson_r,checkpoint,history_file
+3,50,48,0.01884219455330268,258.856,351,1.3678377621439826,0.873910129070282,0.9824856519699097,0.9912776328575975,experiments\reviewer_final_20261014\window_ablation\conv3d_window3_best.pth,experiments\reviewer_final_20261014\window_ablation\conv3d_window3_history.json
+7,50,41,0.01888286520767471,469.844,351,1.3612863542450517,0.8726701736450195,0.982653021812439,0.9913750861139368,experiments\reviewer_final_20261014\window_ablation\conv3d_window7_best.pth,experiments\reviewer_final_20261014\window_ablation\conv3d_window7_history.json
+14,50,40,0.018913191023536703,845.78,351,1.3588287746893075,0.8683741092681885,0.9827155470848083,0.9913939282383901,experiments\reviewer_final_20261014\window_ablation\conv3d_window14_best.pth,experiments\reviewer_final_20261014\window_ablation\conv3d_window14_history.json

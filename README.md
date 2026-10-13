@@ -1,4 +1,4 @@
-# 🌍 Climate Temperature Forecasting using ConvLSTM
+# 🌍 Climate Temperature Forecasting with Conv3D
 
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -64,48 +64,52 @@ The framework automates the complete forecasting pipeline, including:
 - ERA5 climate data download
 - Data preprocessing
 - Geographic region extraction
-# 📊 Results
+# Results
 
-## Research Status
+## Verified data and preprocessing
 
-The raw source, hourly splits, daily files, normalization, and seven-day tensors have passed the recorded preprocessing validation. The old `daily_resampled.nc` remains all-NaN and is excluded. Validation/test value equality to the source is still unverified.
+- ERA5 hourly 2 m temperature (`t2m`) in Kelvin: 2019-01-01 00:00 to 2025-12-31 23:00 UTC.
+- Region: 5-35 N, 65-100 E; 121 x 141 grid at 0.25-degree spacing.
+- Splits: train 2019-2023 (43,824 hourly, 1,826 daily, 1,819 sequences); validation 2024 (8,784 hourly, 366 daily, 359 sequences); test 2025 (8,760 hourly, 365 daily, 358 sequences).
+- Daily fields are the maximum of 24 complete UTC hourly observations. Non-finite values are rejected, not imputed.
+- Training-only normalization: mean 25.044549 C, population std 10.995944 C. Training-only 95th percentile 37.254114 C; normalized loss threshold 1.110370 and extreme weight 5.
 
-## Verified Dataset Definition
+## Corrected five-model comparison
 
-- Raw ERA5 coverage: 2019-01-01 00:00 through 2025-12-31 23:00 UTC.
-- Variable: hourly 2 m temperature (`t2m`), in Kelvin.
-- Study region: 5?35?N and 65?100?E; 121?141 grid at 0.25? resolution.
-- Splits: train 2019?2023, validation 2024, test 2025.
-- Daily aggregation: maximum of 24 hourly observations.
-- Input window: 7 daily fields; forecast horizon: 1 day.
-- Training-only normalization: mean 25.044549 ?C, population std 10.995944 ?C.
-- Training-only 95th-percentile threshold: 37.254114 ?C, normalized threshold 1.110370, loss weight 5.
+RTX 4070, seed 42, batch size 16, Adam at 1e-4, 50 epochs per learned model. Checkpoints were selected by validation loss; test metrics use aligned 2025 predictions and targets. Metrics are degrees C except R2 and Pearson r.
 
-## Corrected Five-Model Results
+| Model | Parameters | Actual epochs | Best epoch | Test RMSE C | Test MAE C | Test R2 | Pearson r |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Persistence | 0 | 0 | n/a | 1.402716 | 0.897498 | 0.981867 | 0.990937 |
+| LSTM | 4,513 | 50 | 50 | 1.572731 | 1.016080 | 0.977206 | 0.988568 |
+| CNN-LSTM | 18,049 | 50 | 48 | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
+| Conv3D encoder-decoder | 29,441 | 50 | 39 | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
+| Transformer | 275,105 | 50 | 36 | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
 
-Each learned model ran for 50 epochs on the RTX 4070 (seed 42, batch 16, Adam, learning rate 1e-4). Checkpoints were selected by validation loss; test metrics were computed after selection. Errors are in ?C.
+The proposed code is Conv3D, not recurrent ConvLSTM. Conv3D modestly outperforms persistence in this single-seed test year. The manuscript values 1.8886/1.6200/0.9720/0.2477 are not verified results from this aligned test evaluation.
 
-| Model | Parameters | Epochs | Best epoch | Validation RMSE | Validation MAE | Test RMSE | Test MAE | Test R? | Test Pearson r |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Persistence | 0 | 0 | ? | 1.39769 | 0.89506 | 1.40272 | 0.89750 | 0.981867 | 0.990937 |
-| LSTM | 4,513 | 50 | 50 | 1.55170 | 1.00950 | 1.57273 | 1.01608 | 0.977206 | 0.988568 |
-| CNN-LSTM | 18,049 | 50 | 48 | 1.39959 | 0.89962 | 1.40052 | 0.89867 | 0.981924 | 0.990928 |
-| Conv3D encoder-decoder (`ConvLSTMModel`) | 29,441 | 50 | 39 | 1.35666 | 0.87306 | 1.36491 | 0.87453 | 0.982832 | 0.991407 |
-| Transformer | 275,105 | 50 | 36 | 1.39792 | 0.89565 | 1.40302 | 0.89871 | 0.981860 | 0.990936 |
+## Matched-date input-window ablation
 
-The Conv3D encoder-decoder had the lowest RMSE and MAE on this test year and modestly outperformed persistence. This is one seed and one temporal split; independent station/operational validation and the learned 3/7/14-day ablation remain pending. Full histories, checkpoints, and aggregate CSV/JSON are in `experiments/reviewer_final_20261014/`.
+Separate Conv3D models were selected on validation loss and evaluated on the same 351 dates, 2025-01-15 through 2025-12-31. Single-seed differences are small and not significance-tested.
+
+| Input days | Best epoch | Test RMSE C | Test MAE C | Test R2 | Pearson r |
+|---:|---:|---:|---:|---:|---:|
+| Persistence | n/a | 1.395853 | 0.892756 | 0.981761 | 0.990882 |
+| Persistence | n/a | 1.395853 | 0.892756 | 0.981761 | 0.990882 |
+| 3 | 48 | 1.367838 | 0.873910 | 0.982486 | 0.991278 |
+| 7 | 41 | 1.361286 | 0.872670 | 0.982653 | 0.991375 |
+| 14 | 40 | 1.358829 | 0.868374 | 0.982716 | 0.991394 |
+
+Complete histories, checkpoints and aggregates are in `experiments/reviewer_final_20261014/` and `experiments/reviewer_final_20261014/window_ablation_final/`. Seasonal and spatial error results and the 35 N, 65 E trace are in `experiments/reviewer_final_20261014/error_analysis.json` and `high_error_point_35N_65E.json`. Full reviewer answers are in [reviewer_questions_answers.md](reviewer_questions_answers.md); command outputs are in [terminal_outputs.md](terminal_outputs.md).
 
 ## Reproduction
 
 ```powershell
-.\.venv\Scripts\python.exe -u preprocessingebuild_downstream.py
-.\.venv\Scripts\python.exe -u verify_preprocessing.py
 .\.venv\Scripts\python.exe -u preprocessing\compute_extremes.py
-.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 50 --batch-size 16 --seed 42 --device cuda --models persistence,lstm,cnn_lstm,convlstm,transformer --output-dir experiments
-ew_run
+.\.venv\Scripts\python.exe -u verify_preprocessing.py
+.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 50 --batch-size 16 --seed 42 --device cuda --models persistence,lstm,cnn_lstm,convlstm,transformer --output-dir experiments\NEW_RUN
+.\.venv\Scripts\python.exe -u experiments\reviewer_final_20261014\run_window_ablation.py --output-dir experiments\reviewer_final_20261014\window_ablation_NEW_RUN
 ```
-
-Detailed evidence and a point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md); command outcomes are in [terminal_outputs.md](terminal_outputs.md).
 
 # 🔬 Methodology
 
@@ -115,7 +119,7 @@ The overall methodology consists of:
 
 1. Download ERA5 climate data
 2. Select the target geographic region
-3. Convert hourly observations into daily maxima (as implemented in `preprocessing/resample_time.py`)
+3. Convert hourly observations into daily maxima (as implemented in `preprocessing/rebuild_downstream.py`)
 4. Normalize temperature values
 5. Generate sliding-window sequences
 6. Train the Conv3D encoder-decoder
@@ -377,7 +381,7 @@ python preprocessing/split_by_year.py
 ### 5. Daily Resampling
 
 ```bash
-python preprocessing/resample_time.py
+python preprocessing/rebuild_downstream.py
 ```
 
 ---
@@ -416,7 +420,7 @@ The project supports multiple deep learning architectures for spatiotemporal for
 
 ## 1. Conv3D Encoder-Decoder (Proposed)
 
-The class is named `ConvLSTMModel` and selected with the compatibility value `model.name: convlstm`; internally it is three Conv3D layers with ReLU after the first two. It is not a genuine ConvLSTM. In the corrected 50-epoch run it achieved test RMSE 1.364915 ?C and MAE 0.874530 ?C, selected at epoch 39 by validation loss.
+The class is named `ConvLSTMModel` and selected with the compatibility value `model.name: convlstm`; internally it is three Conv3D layers with ReLU after the first two. It is not a genuine ConvLSTM. In the corrected 50-epoch run it achieved test RMSE 1.364915 deg C and MAE 0.874530 deg C, selected at epoch 39 by validation loss.
 
 ```yaml
 model:

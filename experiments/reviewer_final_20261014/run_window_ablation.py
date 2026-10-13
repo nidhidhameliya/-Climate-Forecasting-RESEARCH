@@ -1,5 +1,6 @@
-"""Train matched-date Conv3D input-window ablation (3/7/14 days)."""
+﻿"""Train matched-date Conv3D input-window ablation (3/7/14 days)."""
 import csv, json, math, os, random, time
+import argparse
 from pathlib import Path
 import numpy as np
 import torch
@@ -12,8 +13,6 @@ sys.path.insert(0, str(ROOT))
 from models.model_utils import get_model
 from training.losses import get_loss
 
-OUT = Path(__file__).resolve().parent / "window_ablation"
-OUT.mkdir(exist_ok=True)
 DEVICE = torch.device("cuda:0")
 
 class WindowData(Dataset):
@@ -40,6 +39,13 @@ def evaluate(model, loader, mean, std):
     return np.concatenate(ps), np.concatenate(ys)
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--output-dir',default=str(Path(__file__).resolve().parent/'window_ablation_NEW_RUN'))
+    out_arg=Path(parser.parse_args().output_dir)
+    global OUT
+    OUT=out_arg if out_arg.is_absolute() else ROOT/out_arg
+    if (OUT/'window_ablation_results.json').exists(): raise FileExistsError(f"Refusing to overwrite completed ablation: {OUT}")
+    OUT.mkdir(parents=True,exist_ok=True)
     torch.manual_seed(42); np.random.seed(42); random.seed(42); torch.cuda.manual_seed_all(42)
     if not torch.cuda.is_available() or "4070" not in torch.cuda.get_device_name(0): raise RuntimeError("RTX 4070 CUDA device unavailable")
     cfg=yaml.safe_load((ROOT/"config.yaml").read_text()); stats=json.loads((ROOT/"data/processed/mean_std.json").read_text())
@@ -84,3 +90,4 @@ def main():
         for r in results:w.writerow({**{k:r[k] for k in ("window_days","epochs_completed","best_epoch","best_validation_loss","training_seconds","common_test_samples","checkpoint","history_file")},**r["test"]})
     print(f"ABLaTION_COMPLETE {OUT}",flush=True)
 if __name__=="__main__": main()
+

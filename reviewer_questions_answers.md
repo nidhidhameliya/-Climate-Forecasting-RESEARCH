@@ -1,146 +1,126 @@
 # Reviewer Questions: Evidence Based Answers
 
-**Project reviewed:** ERA5 two metre temperature forecasting pipeline in `climate2`  
-**Evidence date:** 14 October 2026 (Asia/Kolkata)
+Evidence reflects project artifacts and the corrected 50-epoch RTX 4070 experiment completed 2026-10-14. **Verified** means directly checked against code/data/results; **Needs Experiment** means the experiment is not complete; **Unable to Confirm** means project evidence is insufficient.
 
-Status labels: **Verified** means supported by the current code/artifacts and the recorded checks; **Needs Experiment** means the claim needs a controlled experiment that has not been completed; **Unable to Confirm** means the project does not preserve enough evidence to resolve it.
+## 1. Dataset — Verified
 
-## 1. Dataset
+Source: `data/interim/region_subset_raw_verified.nc`. Variable `t2m`, hourly 2 m temperature, units K. Times: 2019-01-01 00:00 through 2025-12-31 23:00 UTC (61,368 hourly records). Coordinates: latitude 35 to 5 degrees N descending; longitude 65 to 100 degrees E; 0.25-degree spacing; dimensions time=61,368, latitude=121, longitude=141. Validation and test source value equality remains unverified; their split date/cadence/dimension/finite checks passed. The source file was preserved.
 
-**Verified.** The verified hourly source is `data/interim/region_subset_raw_verified.nc`. Its current NetCDF metadata reports variable `t2m`, units K, 61,368 hourly timestamps from 2019-01-01 00:00 through 2025-12-31 23:00, and dimensions `(time=61368, latitude=121, longitude=141)`. Latitude runs from 35.0°N down to 5.0°N; longitude runs from 65.0°E through 100.0°E. The inclusive coordinate steps are 0.25° in both directions, giving bounds 5–35°N, 65–100°E and a 0.25° grid. The timestamps are hourly ERA5 values of 2 m air temperature. The source and split files were not modified during this review.
+## 2. Preprocessing — Verified
 
-## 2. Preprocessing, missing values, and normalization
+Hourly values are grouped into complete UTC calendar days; each daily cell is the maximum of the 24 hourly `t2m` readings. Non-finite hourly values are rejected rather than imputed. The invalid legacy `data/interim/daily_resampled.nc` contains only NaNs and was not used. Current split daily files and normalized arrays pass `verify_preprocessing.py`.
 
-**Verified.** The new downstream builder `preprocessing/rebuild_downstream.py` reads the existing hourly split files in storage-aligned time chunks. It takes the maximum of exactly 24 hourly values for each UTC day and carries partial days across storage-chunk boundaries. It rejects non-finite hourly values; there is no imputation. The checked hourly splits were finite, and the serialized daily output files were checked for finite values, expected timestamps, dimensions, and Kelvin units before atomic replacement. The old `data/interim/daily_resampled.nc` was separately rechecked in 32-day chunks and contains 43,624,977 NaNs out of 43,624,977 cells, so it must not be used.
+Kelvin daily maxima are converted to Celsius before normalization. Training-only global statistics: mean 25.0445490205 C, population standard deviation 10.9959443687 C, from 31,153,386 values. `z=(C-mean_C)/std_C`; inverse is `C=z*std_C+mean_C`. The evaluator was corrected to respect the stats unit and no longer applies an erroneous Kelvin-to-Celsius subtraction to Celsius statistics.
 
-Normalization is a single global scalar z-score from **training daily values only**, after converting Kelvin to Celsius: `z = (daily_max_K - 273.15 - mean_C) / std_C`. The current `data/processed/mean_std.json` contains mean 25.0445490205 °C, population standard deviation 10.9959443687 °C, and 31,153,386 training grid values. Both statistics were finite and the standard deviation was positive. Inverse normalization to Celsius is `z * std_C + mean_C`; convert that Celsius result to Kelvin by adding 273.15. Do not subtract 273.15 from these Celsius statistics.
+The corrected extreme threshold is training-only daily 95th percentile = 37.2541137695 C (NumPy linear/Hyndman-Fan Type 7), based on the 1,826 training daily maps and 31,153,386 grid values. It is mapped to normalized units as `(threshold_C-mean_C)/std_C = 1.1103698181`; `ExtremeWeightedMSE` uses weight 5 for targets above that threshold. `data/processed/extreme_thresholds.json` records scope, method, date range and count.
 
-The old `evaluate_model.py` assumes its loaded mean is in Kelvin and subtracts 273.15 after denormalization. That convention conflicts with the current `mean_std.json`, which explicitly stores Celsius. Use the corrected Celsius inverse transform in `run_baseline_experiments.py` or fix the evaluator before using it with the current stats. The extreme-threshold file `data/processed/extreme_thresholds.json` is absent; training logs record a fallback threshold of 0 normalized units with `ExtremeWeightedMSE` and extreme weight 5.0. This is not the intended 95th-percentile threshold and should be disclosed or corrected for a final experiment.
+## 3. Splits and counts — Verified
 
-## 3. Splits, record counts, and the 1,089 claim
+All use a seven-day input and next-day target; sequences do not cross split boundaries.
 
-**Verified.** Split boundaries are calendar years. Daily sequence count is `daily records - input window (7)`, since each sample predicts the next day. Shapes below are from the rebuilt arrays and the successful preprocessing verifier.
+| Split | Hourly range, inclusive UTC | Hourly records | Daily range | Daily records | Input-target sequences |
+|---|---|---:|---|---:|---:|
+| Train | 2019-01-01 00:00–2023-12-31 23:00 | 43,824 | 2019-01-01–2023-12-31 | 1,826 | 1,819 |
+| Validation | 2024-01-01 00:00–2024-12-31 23:00 | 8,784 | 2024-01-01–2024-12-31 | 366 | 359 |
+| Test | 2025-01-01 00:00–2025-12-31 23:00 | 8,760 | 2025-01-01–2025-12-31 | 365 | 358 |
 
-| Split | Hourly date range (inclusive) | Hourly records | Daily date range | Daily records | Sequences | X shape; y shape |
-|---|---|---:|---|---:|---:|---|
-| Train | 2019-01-01 00:00 – 2023-12-31 23:00 | 43,824 | 2019-01-01 – 2023-12-31 | 1,826 | 1,819 | `(1819,7,1,121,141)`; `(1819,1,121,141)` |
-| Validation | 2024-01-01 00:00 – 2024-12-31 23:00 | 8,784 | 2024-01-01 – 2024-12-31 | 366 | 359 | `(359,7,1,121,141)`; `(359,1,121,141)` |
-| Test | 2025-01-01 00:00 – 2025-12-31 23:00 | 8,760 | 2025-01-01 – 2025-12-31 | 365 | 358 | `(358,7,1,121,141)`; `(358,1,121,141)` |
+The manuscript's 1,089 sample figure matches an old `outputs/evaluation/train_results.json` with `split=train`, but not the current verified tensor (1,819 sequences). Its provenance cannot be reconstructed and it should be removed or explicitly identified as a stale historical subset.
 
-The 1,089 count appears in the old `outputs/evaluation/train_results.json`, whose metadata says `split=train`, `num_samples=1089`. It does not match the rebuilt train tensor (1,819 sequences) and is not the current validation or test count. Its provenance cannot be recovered from the saved artifact; describe it as a stale result from a different/older preprocessing or sample selection, not as the current split size. Old validation output also says 358 samples, while the rebuilt 2024 validation tensor has 359. Current test count 358 is consistent with 365 days minus seven input days.
+## 4. Model architecture — Verified
 
-## 4. Model architecture and relation to Figure 3
+The proposed implementation is a Conv3D encoder-decoder, not ConvLSTM: code class `ConvLSTMModel` in `models/convlstm.py` contains no recurrence, gates, or cell state. Input Bx7x1x121x141 is permuted to Bx1x7x121x141. Conv3D(1,32,kernel 3x3x3,padding 1) gives Bx32x7x121x141 (896 parameters); ReLU; Conv3D(32,32,3x3x3,padding 1) same shape (27,680 parameters); ReLU; Conv3D(32,1,3x3x3,padding 1) gives Bx1x7x121x141 (865 parameters); last time index gives Bx1x121x141. Total 29,441 trainable parameters. The exact Figure 3 source was not provided in the project, so figure-specific differences cannot be confirmed. The proposed model differs from actual recurrent LSTM baselines; relabel the manuscript and redraw Figure 3 to match code.
 
-**Verified.** Despite its class and file names (`ConvLSTMModel`, `models/convlstm.py`), the proposed implementation is a **Conv3D encoder-decoder, not a genuine ConvLSTM**. For input `B×7×1×121×141`, it permutes to Conv3D order `B×1×7×121×141`, then applies:
+Experiment config: seven input days, one-day horizon, hidden dim 32, batch 16, Adam lr 1e-4, seed 42, 50 epochs, weighted MSE threshold above, CUDA RTX 4070. Best checkpoint selected only by validation loss.
 
-| Layer | Configuration | Output tensor for this input | Trainable parameters |
-|---|---|---|---:|
-| Conv3D | 1→32 channels, kernel 3×3×3, padding 1 | B×32×7×121×141 | 896 |
-| ReLU | elementwise | B×32×7×121×141 | 0 |
-| Conv3D | 32→32, kernel 3×3×3, padding 1 | B×32×7×121×141 | 27,680 |
-| ReLU | elementwise | B×32×7×121×141 | 0 |
-| Conv3D decoder | 32→1, kernel 3×3×3, padding 1 | B×1×7×121×141 | 865 |
-| Last time index | `out[:, :, -1, :, :]` | B×1×121×141 | 0 |
+## 5. Metrics — Verified aligned results
 
-Total trainable parameters: **29,441**. The convolutions mix the seven input frames locally along time and space. There are no recurrent gates, cell state, or recurrent update. The repository also contains an independent per-grid-cell LSTM baseline, a CNN plus pooled-feature LSTM, and a pooled-feature Transformer in `models/`.
+Fresh predictions and targets have matching shapes and were aligned against daily targets. Values below are Celsius errors; R2 and Pearson r are separately computed across the same flattened test grid values.
 
-The manuscript/Figure 3 source file was not present in the project inventory, so its exact blocks and arrows cannot be checked. The project documentation itself marks the Figure 3 explanation as partial. Correct the figure/caption to match the code if it depicts ConvLSTM gates or recurrent state; compare it with the LSTM baseline only after the manuscript figure is supplied.
+| Model | Actual epochs | Best validation epoch | Test RMSE C | Test MAE C | Test R2 | Test Pearson r |
+|---|---:|---:|---:|---:|---:|---:|
+| Persistence (last input day) | 0 | n/a | 1.402716 | 0.897498 | 0.981867 | 0.990937 |
+| LSTM | 50 | 50 | 1.572731 | 1.016080 | 0.977206 | 0.988568 |
+| CNN-LSTM | 50 | 48 | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
+| Conv3D encoder-decoder | 50 | 39 | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
+| Transformer | 50 | 36 | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
 
-Training configuration in `config.yaml`: input length 7 days, hidden dimension 32, batch size 8, 100 epochs, Adam learning rate 1e-4, CUDA requested, and `ExtremeWeightedMSE`. The recorded smoke test overrode batch size to 16 and epochs to 1; the interrupted comparison requested 50 epochs, batch size 16, seed 42.
+The selected Conv3D checkpoint was independently evaluated with `evaluate_model.py` on both validation and test: 359 aligned validation samples (2024-01-08 through 2024-12-31) and 358 aligned test samples (2025-01-08 through 2025-12-31). Validation metrics match the runner; test evaluator vs runner deltas were below 2.4e-8 for all four statistics. The reported manuscript quartet (1.8886, 1.6200, 0.9720, 0.2477) is not a current test result: old 1.8886/1.6200 came from an old train artifact; old 0.9720 is consistent with Pearson rather than R2 in an old test report; 0.2477 is unsupported. Do not report the old scores as comparable to this corrected run.
 
-## 5. Metric verification
+## 6. Comparisons and window ablation — Verified
 
-**Verified for the artifacts named below; the manuscript's four-number test claim is not verified.**
+Five-model results above use identical test dates. Persistence is a legitimate baseline and remains strong; Conv3D improves on it by 0.03780 C RMSE and 0.02297 C MAE on the full 358 test dates. These are single-seed results, not significance tests. The separate Conv3D 3/7/14-day ablation completed 50 epochs per window. The common test dates are 2025-01-15 through 2025-12-31 (351 targets), with each checkpoint selected by its own validation loss; the test set was not used for selection.
 
-| Metric/source | RMSE (°C) | MAE (°C) | R² | Pearson r | Evidence/status |
-|---|---:|---:|---:|---:|---|
-| Manuscript values queried | 1.8886 | 1.6200 | 0.9720 | 0.2477 | Not a reproducible aligned test result. 1.8886/1.6200 occur in the old train report, while 0.9720 occurs as Pearson correlation in the old test report; 0.2477 is not found in project result artifacts. |
-| Historical saved test report, 358 samples | 1.88236 | 1.61278 | Not saved | 0.972017 | `outputs/evaluation/test_results.json`; dated from the old artifact set and cannot be regenerated from saved prediction arrays (none found). Treat as historical, not verified against the rebuilt split. |
-| Current Conv3D one-epoch smoke checkpoint, rebuilt test tensors, 358 target dates | 1.93163 | 1.25357 | 0.965615 | 0.982838 | Recalculated from aligned model predictions and targets in the follow-up diagnostic. This is a smoke-only result, not a final trained model result. |
-| Persistence, same 358 target dates | 1.40272 | 0.89750 | 0.981867 | 0.990937 | Recalculated from the final input day and exact same targets. Persistence outperforms the one-epoch smoke model; do not present the smoke result as a final model comparison. |
+| Input days | Completed epochs | Best validation epoch | Common test RMSE C | MAE C | R2 | Pearson r |
+|---:|---:|---:|---:|---:|---:|---:|
+| Persistence baseline | 0 | n/a | 1.395853 | 0.892756 | 0.981761 | 0.990882 |
+| 3 | 50 | 48 | 1.367838 | 0.873910 | 0.982486 | 0.991278 |
+| 7 | 50 | 41 | 1.361286 | 0.872670 | 0.982653 | 0.991375 |
+| 14 | 50 | 40 | 1.358829 | 0.868374 | 0.982716 | 0.991394 |
 
-The old train report is the source of RMSE 1.8886117 °C and MAE 1.6200423 °C, with 1,089 samples. The old validation report has MAE 1.6200051 °C. The old test report's 0.9720169 is Pearson correlation, not R²: `evaluate_model.py` computes a correlation but does not compute R², and its JSON has no R² field. The Pearson value 0.2477 is not reproduced. The current smoke test directly computes all four metrics on 6,107,838 aligned grid values (358×121×141); those results differ from the manuscript claim. The old result JSON has no saved prediction arrays, so the historical checkpoint metrics cannot be independently recalculated with current data and current normalization.
+The persistence row is computed on the same 351 target dates. The 14-day window is best among the learned windows by RMSE/MAE on this matched test subset, with small differences; this single-seed result does not establish statistical significance. Full histories, checkpoints and aggregate CSV/JSON are in `experiments/reviewer_final_20261014/window_ablation_final/`.
 
-## 6. Baseline and input-window comparisons
+## 7. Error analysis — Verified
 
-**Verified baseline; learned-model/window ablation needs experiment.** A no-training persistence forecast was calculated from the last input day. Natural per-window target ranges differ, so do not compare their scores as if they used identical dates. The 14-day range (2025-01-15–2025-12-31) is the common target subset for a fair 3/7/14-day window comparison. Older prose in `research.md`/`README.md` cites persistence RMSE 1.1277 °C and Conv3D RMSE 1.8823 °C, but those figures predate the repaired normalization and lack a present matching results JSON/prediction arrays; they are historical claims, not valid current comparisons. `experiments/exp_01_baseline/metrics.json` is empty, and no completed result artifacts were found for the older ConvLSTM/Transformer folders. The `revision/` directory contains analysis scripts, not completed generated comparison tables.
+**Verified.** Final-checkpoint seasonal and gridpoint errors are in `experiments/reviewer_final_20261014/error_analysis.json`.
 
-| Input window | Test sequences | Natural target dates | Persistence RMSE (°C) | Persistence MAE (°C) |
-|---:|---:|---|---:|---:|
-| 3 days | 362 | 2025-01-04 – 2025-12-31 | 1.40706 | 0.89967 |
-| 7 days | 358 | 2025-01-08 – 2025-12-31 | 1.40272 | 0.89750 |
-| 14 days | 351 | 2025-01-15 – 2025-12-31 | 1.39585 | 0.89276 |
+| Season | Target days | RMSE C | MAE C |
+|---|---:|---:|---:|
+| DJF | 83 | 1.307819 | 0.828338 |
+| MAM | 92 | 1.494154 | 0.971866 |
+| JJA | 92 | 1.395633 | 0.904881 |
+| SON | 91 | 1.242129 | 0.787571 |
 
-On the common 351 dates, persistence has RMSE 1.39585 °C and MAE 0.89276 °C. No controlled learned-model experiment for 3-, 7-, and 14-day inputs has completed. The five-model 50-epoch run stopped after LSTM completed and CNN-LSTM reached epoch 3; only partial checkpoints exist and no final comparison JSON/CSV was written. The process is no longer available, and Windows process enumeration via CIM/tasklist returned access denied; the available PowerShell Python-process query returned no Python processes. Do not treat partial checkpoints as completed benchmark results.
+Gridpoint RMSE ranges from 0.286931 C at 14.75 N, 67.5 E to 5.539139 C at 35 N, 100 E; unweighted mean of per-gridpoint RMSE is 1.175518 C. At the specifically queried 35 N, 65 E location, all 8,760 hourly test values are finite and the 365 daily maxima match stored daily values exactly. The 358 forecast targets align within 1.91e-6 C. Its largest absolute error is 14.294018 C on 2025-02-11 (input previous-day Tmax -1.920654 C; observed -10.193449 C; predicted 4.100569 C). The maximum RMSE gridpoint is elsewhere; these are distinct error summaries. Test data were not altered.
 
-## 7. Seasonal and spatial errors
+## 8. Reproducibility — Verified environment and commands
 
-**Verified for the one-epoch smoke checkpoint only; final-model error analysis needs experiment.** The aligned smoke predictions were grouped by target date into meteorological seasons. Persistence is included as context, not as a learned model. All errors are °C.
-
-| Season | Target days | Smoke Conv3D RMSE | Smoke Conv3D MAE | Persistence RMSE | Persistence MAE |
-|---|---:|---:|---:|---:|---:|
-| DJF | 83 | 2.0990 | 1.2980 | 1.3465 | 0.8535 |
-| MAM | 92 | 2.1013 | 1.3813 | 1.5330 | 0.9954 |
-| JJA | 92 | 1.7727 | 1.2058 | 1.4427 | 0.9304 |
-| SON | 91 | 1.7377 | 1.1323 | 1.2677 | 0.8054 |
-
-Across 2025 target dates 2025-01-08–2025-12-31, smoke-model per-gridpoint RMSE ranges from 0.3927 to 14.5471 °C (mean of gridpoint RMSEs 1.5736 °C). The highest-error grid point is 35.0°N, 65.0°E at 14.5471 °C RMSE. These are diagnostic smoke results only; the substantial worst-point error and persistence advantage make a final trained error analysis necessary.
-
-## 8. Reproducibility and next commands
-
-**Verified environment:** Windows project virtual environment; Python 3.11.9, PyTorch 2.5.1+cu121, CUDA runtime 12.1, NumPy 2.4.2, xarray 2026.2.0, SciPy 1.17.1, scikit-learn 1.8.0; GPU NVIDIA GeForce RTX 4070. PyTorch reported CUDA available. The command outputs and exits are recorded in `terminal_outputs.md`.
-
-The following commands reproduce preprocessing and a new, separate smoke/full run without reusing or overwriting prior experiment folders:
+Verified environment: Python 3.11.9, PyTorch 2.5.1+cu121, CUDA runtime 12.1, RTX 4070; recorded dependency versions include NumPy 2.4.2, xarray 2026.2.0, SciPy 1.17.1 and scikit-learn 1.8.0.
 
 ```powershell
-.\.venv\Scripts\python.exe -u preprocessing\rebuild_downstream.py
+.\.venv\Scripts\python.exe -u preprocessing\compute_extremes.py
 .\.venv\Scripts\python.exe -u verify_preprocessing.py
-.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 1 --batch-size 16 --seed 42 --device cuda --models convlstm --output-dir experiments\reviewer_smoke_20261014
+.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 50 --batch-size 16 --seed 42 --device cuda --models persistence,lstm,cnn_lstm,convlstm,transformer --output-dir experiments\reviewer_final_20261014
+.\.venv\Scripts\python.exe -u experiments\reviewer_final_20261014\run_window_ablation.py --output-dir experiments\reviewer_final_20261014\window_ablation_NEW_RUN
 ```
 
-After preprocessing passes and the smoke command exits 0, a complete comparison can be run in a fresh directory:
+The first two commands reproduce the corrected threshold and validate saved preprocessing. The run output directory is intentionally fixed and existing result outputs are protected from overwrite; use a new output directory for a new run. Evaluation cross-check command is recorded in `terminal_outputs.md`.
 
-```powershell
-.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 50 --batch-size 16 --seed 42 --device cuda --models persistence,lstm,cnn_lstm,convlstm,transformer --output-dir experiments\reviewer_full_20261014
-```
+## Unresolved issues
 
-The current aligned smoke seasonal/spatial and persistence calculation is reproducible with:
+- Validation/test hourly values have not been compared value-for-value with the verified raw source; their structural/finite checks passed.
+- The manuscript/Figure 3 source was unavailable for exact figure reconciliation.
+- Five-model comparison is one seed and one split; uncertainty across seeds is not estimated.
+- The 1,089 historical sample count's original selection rule is unknown.
 
-```powershell
-.\.venv\Scripts\python.exe -u experiments\reviewer_followup_analysis_20261014\analyze_smoke.py
-```
+## Recommended manuscript corrections
 
-That script writes only `experiments/reviewer_followup_analysis_20261014/followup_analysis.json`. It does not save raw model predictions. A proper learned-model 3/7/14-day ablation requires generating separate sequences for each window, training and selecting each model using validation only, and evaluating the same 351 test target dates. Do not reuse the current seven-day checkpoint as if it had been trained on the other windows.
-
-## Unresolved items and manuscript corrections
-
-- Mark validation/test value-for-value equality against the raw source **unverified**. Their date bounds, hourly cadence, dimensions, Kelvin units, and finite values passed; only train/source equality was previously verified.
-- Replace the stale 1,089 sample claim with 1,819 train, 359 validation, and 358 test sequences under the verified 7-day/1-day protocol; explain the old count as an unreconciled historical artifact.
-- Rename the proposed method “Conv3D encoder-decoder” unless the code is changed to implement recurrent ConvLSTM cells. Update Figure 3 and its caption using the actual manuscript figure.
-- Report R² and Pearson r as distinct metrics, recomputed from the same held-out predictions. Remove or correct the unsupported 0.2477 correlation claim.
-- Do not report historical or one-epoch smoke scores as the final test result. A completed training/comparison and final held-out analysis remain outstanding; current persistence already outperforms the smoke checkpoint.
-- Correct `evaluate_model.py` for the Celsius normalization metadata before using it. Decide whether to generate a proper training-only extreme threshold or explicitly describe the current fallback loss.
-- Explain that validation/test source equality and the provenance of the manuscript's Figure 3 and 1,089 count remain unconfirmed.
+1. Replace the 1,089 count with 1,819/359/358 train/validation/test sequences for the stated seven-day next-day protocol; give hourly and daily counts in the table above.
+2. Describe hourly-to-daily maximum aggregation and training-only Celsius z-score. Distinguish R2 from Pearson correlation.
+3. Rename the proposed architecture Conv3D encoder-decoder and correct Figure 3 to match the three Conv3D layers.
+4. Replace historical metric quartet with the corrected aligned test table and disclose single-seed protocol and strong persistence baseline.
+5. State validation/test source-value equality as unverified until that comparison is run.
 
 ## Point-by-point reviewer response draft
 
-1. **Dataset:** “We now specify the exact ERA5 `t2m` subset: hourly Kelvin data for 2019-01-01 00:00 through 2025-12-31 23:00, 5–35°N and 65–100°E on a 0.25° grid (121×141).”
-2. **Preprocessing:** “We aggregate each complete UTC day as the maximum of its 24 hourly values, reject non-finite input values, and calculate global z-score statistics from the training split only after Kelvin-to-Celsius conversion. We have corrected the inverse transform convention and excluded the all-NaN legacy daily file.”
-3. **Splits:** “The verified seven-day input / next-day target splits contain 1,819 train, 359 validation, and 358 test sequences. The earlier 1,089 count belongs to an unreconciled historical train artifact and is not the current split size.”
-4. **Architecture:** “The implementation previously called ConvLSTM is actually a three-layer Conv3D encoder-decoder with 29,441 trainable parameters. We will relabel the method and revise Figure 3/caption, or provide a new genuine ConvLSTM implementation and results.”
-5. **Metrics:** “The four manuscript numbers do not form a verified held-out result. The saved historical test artifact reports RMSE 1.88236 °C, MAE 1.61278 °C and Pearson r 0.97202 but no R² and no preserved prediction arrays. A fresh one-epoch diagnostic gives different metrics and is not a final result; 0.2477 remains unsupported.”
-6. **Comparisons:** “We have calculated persistence on the rebuilt test split. It outperforms the one-epoch smoke model. We will complete matched-date learned-model comparisons and the 3/7/14-day input ablation before making comparative performance claims.”
-7. **Error analysis:** “We provide seasonal and spatial diagnostics for the smoke checkpoint as preliminary only. Final error analysis will be rerun using the completed selected model and the aligned held-out dates.”
-8. **Reproducibility:** “We report the verified Python/PyTorch/CUDA/GPU environment and provide the preprocessing, validation, smoke, and full-comparison commands. The complete 50-epoch comparison and learned-model window ablation are still pending.”
+1. **Dataset:** “We specify ERA5 hourly t2m in Kelvin, 2019-01-01 00:00 to 2025-12-31 23:00 UTC, over 5–35 N and 65–100 E at 0.25-degree resolution (121x141).”
+2. **Preprocessing:** “We use the maximum of each complete 24-hour UTC day, reject rather than impute non-finite values, and normalize Celsius daily maxima using training-only global mean and standard deviation. The inverse transform is corrected.”
+3. **Splits:** “The current seven-day/next-day protocol has 1,819 train, 359 validation, and 358 test sequences. The 1,089 figure came from a stale artifact whose subset provenance is unavailable.”
+4. **Architecture:** “The implementation is a 29,441-parameter Conv3D encoder-decoder, not a ConvLSTM. We will correct the method name and Figure 3.”
+5. **Metrics:** “We reevaluated aligned 2025 predictions and targets. The selected Conv3D obtains RMSE 1.364915 C, MAE 0.874530 C, R2 0.982832, and Pearson r 0.991407. R2 and correlation are reported as distinct statistics; prior unsupported historical values are withdrawn.”
+6. **Comparisons:** “We provide persistence, LSTM, CNN-LSTM, Conv3D, and Transformer comparisons with checkpoints selected on validation data only. We also report the 3/7/14-day Conv3D ablation on the same 351 test target dates.”
+7. **Error analysis:** “At 35 N, 65 E, source daily aggregation and prediction-date alignment were checked; the largest absolute error is traced to 2025-02-11. We do not modify held-out observations.”
+8. **Reproducibility:** “We provide the environment versions and exact preprocessing, verification, model-comparison, and ablation commands, together with saved histories and checkpoints.”
 
-## Files changed and validation record
+## Artifact paths
 
-Exact files created or modified during this project session:
+- Main comparison: `experiments/reviewer_final_20261014/comparison_results.json` and `.csv`.
+- Incremental completion ledger: `experiments/reviewer_final_20261014/completed_results.json`.
+- Checkpoints/histories: CNN-LSTM, Conv3D and Transformer are under `experiments/reviewer_final_20261014/`; the verified 50-epoch LSTM checkpoint/history are under `experiments/reviewer_lstm_repaired_20261014/`. The tracked six-epoch LSTM files in the main directory are preserved as historical partial artifacts and are not the checkpoint used for the reported LSTM metrics. Persistence has no checkpoint.
+- Extreme threshold: `data/processed/extreme_thresholds.json`.
+- High-error trace and seasonal/spatial aggregate: `experiments/reviewer_final_20261014/high_error_point_35N_65E.json` and `experiments/reviewer_final_20261014/error_analysis.json`.
+- Matched-date window ablation artifacts: `experiments/reviewer_final_20261014/window_ablation_final/`.
+- Command records: `terminal_outputs.md`.
 
-- Added: `reviewer_questions_answers.md`, `preprocessing/rebuild_downstream.py`, `verify_preprocessing.py`, `experiments/reviewer_followup_analysis_20261014/analyze_smoke.py`, `experiments/reviewer_followup_analysis_20261014/followup_analysis.json`, and `terminal_outputs.md`.
-- Modified: `run_baseline_experiments.py`, `training/losses.py`, `data/processed/mean_std.json`, `data/processed/train.npy`, `data/processed/val.npy`, `data/processed/test.npy`, `data/processed/tensors/train_X.npy`, `train_y.npy`, `val_X.npy`, `val_y.npy`, `test_X.npy`, `test_y.npy`, and the generated `data/interim/train_daily.nc`, `val_daily.nc`, `test_daily.nc`.
-- Experiment outputs created by this work: `experiments/reviewer_baselines_verified_20261013_smoke_retry2/convlstm_best.pth`, `comparison_results.json`, `comparison_results.csv`; partial full-run outputs `experiments/reviewer_baselines_verified_20261013/lstm_best.pth` and `cnn_lstm_best.pth`.
-- Backups created: `backups/terminal_outputs_before_repair_20261013_233505.md`, `backups/pipeline_20261013_222743/run_baseline_experiments.py`, `backups/losses_20261013_235847/losses.py`, and `backups/pre_chunked_20261013_233446/{train_daily.nc,val_daily.nc,test_daily.nc}`.
-- Deleted: `file.tmp` (0 bytes, confirmed empty).
 
-The raw verified source `data/interim/region_subset_raw_verified.nc`, hourly splits `train.nc`/`val.nc`/`test.nc`, `revision/`, historical `outputs/` reports, and historical `experiments/latest/model.pth` checkpoint were preserved. The preprocessing verifier exited 0; the smoke experiment exited 0; the follow-up aligned-metric/season/spatial analysis exited 0. The five-model run is incomplete and has no captured final exit code or aggregate results file. See `terminal_outputs.md` for commands and actual outcomes.
+
+

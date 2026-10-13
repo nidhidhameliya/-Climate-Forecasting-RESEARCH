@@ -1,0 +1,68 @@
+{
+  "checkpoint": "experiments/reviewer_final_20261014/convlstm_best.pth",
+  "aligned_test_dates": [
+    "2025-01-08",
+    "2025-12-31"
+  ],
+  "samples": 358,
+  "seasonal": {
+    "DJF": {
+      "target_days": 83,
+      "rmse_celsius": 1.3078193664550781,
+      "mae_celsius": 0.8283376097679138
+    },
+    "MAM": {
+      "target_days": 92,
+      "rmse_celsius": 1.4941539764404297,
+      "mae_celsius": 0.9718661904335022
+    },
+    "JJA": {
+      "target_days": 92,
+      "rmse_celsius": 1.3956328630447388,
+      "mae_celsius": 0.9048813581466675
+    },
+    "SON": {
+      "target_days": 91,
+      "rmse_celsius": 1.242128610610962,
+      "mae_celsius": 0.787570595741272
+    }
+  },
+  "spatial_gridpoint_rmse": {
+    "min": {
+      "latitude": 14.75,
+      "longitude": 67.5,
+      "rmse_celsius": 0.2869308292865753
+    },
+    "mean": 1.1755183935165405,
+    "max": {
+      "latitude": 35.0,
+      "longitude": 100.0,
+      "rmse_celsius": 5.539139270782471
+    }
+  },
+  "high_error_point_35N_65E": {
+    "coordinate_latitude": 35.0,
+    "coordinate_longitude": 65.0,
+    "hourly_records": 8760,
+    "hourly_finite": true,
+    "daily_records_checked": 365,
+    "hourly_24h_max_matches_daily_max": true,
+    "max_abs_difference_K": 0.0,
+    "forecast_samples": 358,
+    "forecast_target_dates": [
+      "2025-01-08",
+      "2025-12-31"
+    ],
+    "last_input_day_matches_daily_series_max_abs_difference_C": 1.9073486328125e-06,
+    "targets_match_daily_series_max_abs_difference_C": 1.9073486328125e-06,
+    "largest_abs_error": {
+      "target_date": "2025-02-11",
+      "previous_input_date": "2025-02-10",
+      "previous_input_tmax_C": -1.920654296875,
+      "observed_target_tmax_C": -10.193449020385742,
+      "predicted_tmax_C": 4.100568771362305,
+      "absolute_error_C": 14.294017791748047
+    },
+    "conv3d_selected_checkpoint": "experiments/reviewer_final_20261014/convlstm_best.pth"
+  }
+}

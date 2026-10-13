@@ -296,8 +296,8 @@
         "r2": 0.9772056341171265,
         "correlation": 0.9885678464754004
       },
-      "checkpoint": "experiments\\reviewer_final_20261014\\lstm_best.pth",
-      "history_file": "experiments\\reviewer_final_20261014\\lstm_history.json"
+      "checkpoint": "experiments\\reviewer_lstm_repaired_20261014\\lstm_best.pth",
+      "history_file": "experiments\\reviewer_lstm_repaired_20261014\\lstm_history.json"
     },
     {
       "model": "cnn_lstm",

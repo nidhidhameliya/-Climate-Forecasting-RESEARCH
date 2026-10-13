@@ -4,7 +4,7 @@ Project: `C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2`
 
 This file is the single place for command output retained for later review. Add each command, date/time, exit code, and complete stdout/stderr under a new section. For PowerShell commands, append captured output with `Tee-Object -FilePath terminal_outputs.md -Append` only when the output is plain text; for structured commands, redirect output to a temporary file and append it under a fenced code block so this Markdown remains readable.
 
-## 2026-10-13 — Initial inspection
+## 2026-10-13 â€” Initial inspection
 
 ### Compare supplied task attachments
 
@@ -29,7 +29,7 @@ Command: `git status --short`
 The repository contains multiple project documents and at least one existing training log (`experiments/exp_01_baseline/training_log.txt`). No existing general-purpose terminal-output Markdown log was identified. The existing training log and project documents were left untouched.
 
 
-## 2026-10-13 — Remove confirmed empty temporary file
+## 2026-10-13 â€” Remove confirmed empty temporary file
 
 Command: Remove-Item -LiteralPath file.tmp
 
@@ -37,7 +37,7 @@ Command: Remove-Item -LiteralPath file.tmp
 Deleted file.tmp (0 bytes, an empty temporary file).
 ```
 
-## 2026-10-13 — Dataset and workspace inventory
+## 2026-10-13 â€” Dataset and workspace inventory
 
 Command: PowerShell inventory of data, prior results, revision directory, and Python environments.
 
@@ -52,14 +52,14 @@ C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\interim\
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\interim\test.nc                       250200623
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\interim\train.nc                      ...132695
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\interim\val.nc                        250568310
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\processed\tensors                              
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\processed\tensors
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\processed\mean_std.json                      25
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\processed\test.npy                     24909188
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\processed\train.npy                   124613672
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\data\processed\val.npy                      24977432
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\figures                                    
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\predictions                                
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\results                                    
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\figures
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\predictions
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\results
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\fix_mean_std.py                        1820
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\run_all.py                             5152
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\task1_data_facts.py                   14371
@@ -69,10 +69,10 @@ C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\task
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\task5_summary.py                      16561
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\utils.py                               4989
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\__init__.py                              19
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\exp_01_baseline                         
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\exp_02_convlstm                         
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\exp_03_transformer                      
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\latest                                  
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\exp_01_baseline
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\exp_02_convlstm
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\exp_03_transformer
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\latest
 
 
 
@@ -89,17 +89,17 @@ LastWriteTime : 19-09-2026 19:24:05
 
 --- Python executables ---
 
-Source                                                                                     
-------                                                                                     
+Source
+------
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\.venv\Scripts\python.exe
-C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\venv\Scripts\python.exe 
+C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\venv\Scripts\python.exe
 
 
 
 --- Backup directory inventory ---
 
-FullName                                                                                        Length LastWriteTime   
---------                                                                                        ------ -------------   
+FullName                                                                                        Length LastWriteTime
+--------                                                                                        ------ -------------
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\figures                    13-10-2026 13...
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\predictions                13-10-2026 13...
 C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\results                    13-10-2026 13...
@@ -116,7 +116,7 @@ C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\revision\__in
 
 ```
 
-## 2026-10-13 — Detailed pipeline inspection
+## 2026-10-13 â€” Detailed pipeline inspection
 
 Command: Inspect model implementation files, source NetCDF metadata and time/value properties, installed Python/Torch/CUDA versions, and existing revision result artifacts
 
@@ -297,7 +297,7 @@ time duplicates False
 Prior experiment files
 ```
 
-## 2026-10-13 — Timestamped backup
+## 2026-10-13 â€” Timestamped backup
 
 Command: copied run_baseline_experiments.py before targeted changes.
 
@@ -315,18 +315,18 @@ At line:9 char:5
 +     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
- 
-  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\preprocessing\rebuild_verified.py", line 
+
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\preprocessing\rebuild_verified.py", line
 154, in <module>
     main()
-  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\preprocessing\rebuild_verified.py", line 
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\preprocessing\rebuild_verified.py", line
 76, in main
     atomic_netcdf(hourly, hourly_path)
-  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\preprocessing\rebuild_verified.py", line 
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\preprocessing\rebuild_verified.py", line
 27, in atomic_netcdf
     os.replace(temp, path)
-PermissionError: [WinError 5] Access is denied: 
-'C:\\Users\\25mdsml006\\Desktop\\deep_learning\\project\\climate\\climate2\\data\\interim\\train.nc.tmp' -> 
+PermissionError: [WinError 5] Access is denied:
+'C:\\Users\\25mdsml006\\Desktop\\deep_learning\\project\\climate\\climate2\\data\\interim\\train.nc.tmp' ->
 'C:\\Users\\25mdsml006\\Desktop\\deep_learning\\project\\climate\\climate2\\data\\interim\\train.nc'
 
 Exit code: 1
@@ -2242,27 +2242,940 @@ transformer epoch 50/50: train_loss=0.020230, val_loss=0.020588
 Exit code: 0
 ```
 
-## 2026-10-14 � Matched-date input-window ablation
+## 2026-10-14 — Matched-date input-window ablation
 
 Command: `.\.venv\Scripts\python.exe -u experiments\reviewer_final_20261014\run_window_ablation.py`
 
-`	ext
+```text
 .\.venv\Scripts\python.exe : Traceback (most recent call last):
 At line:2 char:258
 + ... `n```text"; .\.venv\Scripts\python.exe -u experiments\reviewer_final_ ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
- 
+
   File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\run_wind
 ow_ablation.py", line 9, in <module>
     from models.model_utils import get_model
 ModuleNotFoundError: No module named 'models'
-` `n
+```
+
 Exit code: 1
 
-## 2026-10-14 � Matched-date input-window ablation retry
+## 2026-10-14 — Matched-date input-window ablation retry
 
 Command: `.\.venv\Scripts\python.exe -u experiments\reviewer_final_20261014\run_window_ablation.py`
 
-`	ext
+```text
+
+
+
+window=3 epoch=1/50 train=0.217829 val=0.038499
+window=3 epoch=2/50 train=0.033130 val=0.029108
+window=3 epoch=3/50 train=0.026753 val=0.025227
+window=3 epoch=4/50 train=0.023984 val=0.023931
+window=3 epoch=5/50 train=0.022727 val=0.022362
+window=3 epoch=6/50 train=0.022031 val=0.021907
+window=3 epoch=7/50 train=0.021278 val=0.021526
+window=3 epoch=8/50 train=0.021002 val=0.021325
+window=3 epoch=9/50 train=0.020739 val=0.020681
+window=3 epoch=10/50 train=0.020726 val=0.020634
+window=3 epoch=11/50 train=0.020306 val=0.020320
+window=3 epoch=12/50 train=0.020013 val=0.020865
+window=3 epoch=13/50 train=0.019936 val=0.020463
+window=3 epoch=14/50 train=0.019929 val=0.020113
+window=3 epoch=15/50 train=0.019797 val=0.019837
+window=3 epoch=16/50 train=0.019472 val=0.019663
+window=3 epoch=17/50 train=0.019531 val=0.019721
+window=3 epoch=18/50 train=0.019509 val=0.020593
+window=3 epoch=19/50 train=0.019515 val=0.019599
+window=3 epoch=20/50 train=0.019528 val=0.019326
+window=3 epoch=21/50 train=0.019304 val=0.019728
+window=3 epoch=22/50 train=0.019234 val=0.019404
+window=3 epoch=23/50 train=0.019640 val=0.019291
+window=3 epoch=24/50 train=0.019108 val=0.019284
+window=3 epoch=25/50 train=0.019105 val=0.019306
+window=3 epoch=26/50 train=0.019240 val=0.019088
+window=3 epoch=27/50 train=0.019130 val=0.019133
+window=3 epoch=28/50 train=0.019267 val=0.019224
+window=3 epoch=29/50 train=0.019044 val=0.019550
+window=3 epoch=30/50 train=0.019097 val=0.019214
+window=3 epoch=31/50 train=0.019185 val=0.019336
+window=3 epoch=32/50 train=0.019016 val=0.019763
+window=3 epoch=33/50 train=0.018841 val=0.019283
+window=3 epoch=34/50 train=0.018877 val=0.019130
+window=3 epoch=35/50 train=0.019075 val=0.019220
+window=3 epoch=36/50 train=0.019051 val=0.019159
+window=3 epoch=37/50 train=0.019305 val=0.019379
+window=3 epoch=38/50 train=0.018943 val=0.018944
+window=3 epoch=39/50 train=0.018822 val=0.019177
+window=3 epoch=40/50 train=0.018962 val=0.019676
+window=3 epoch=41/50 train=0.018953 val=0.018869
+window=3 epoch=42/50 train=0.018883 val=0.019277
+window=3 epoch=43/50 train=0.018925 val=0.019480
+window=3 epoch=44/50 train=0.018850 val=0.019040
+window=3 epoch=45/50 train=0.018817 val=0.019361
+window=3 epoch=46/50 train=0.018827 val=0.018901
+window=3 epoch=47/50 train=0.018830 val=0.019563
+window=3 epoch=48/50 train=0.018743 val=0.018842
+window=3 epoch=49/50 train=0.018994 val=0.018877
+window=3 epoch=50/50 train=0.018683 val=0.019312
+window=3 selected_epoch=48 common_test={'rmse_celsius': 1.3678377621439826, 'mae_celsius': 0.873910129070282, 'r2': 0.9824856519699097, 'pearson_r': 0.9912776328575975}
+window=7 epoch=1/50 train=0.224356 val=0.040447
+window=7 epoch=2/50 train=0.033638 val=0.030222
+window=7 epoch=3/50 train=0.027292 val=0.025817
+window=7 epoch=4/50 train=0.024218 val=0.023761
+window=7 epoch=5/50 train=0.023059 val=0.023512
+window=7 epoch=6/50 train=0.022054 val=0.022415
+window=7 epoch=7/50 train=0.021362 val=0.021744
+window=7 epoch=8/50 train=0.021069 val=0.021048
+window=7 epoch=9/50 train=0.020589 val=0.020642
+window=7 epoch=10/50 train=0.020495 val=0.020397
+window=7 epoch=11/50 train=0.020117 val=0.020405
+window=7 epoch=12/50 train=0.020179 val=0.019977
+window=7 epoch=13/50 train=0.019828 val=0.019958
+window=7 epoch=14/50 train=0.019700 val=0.019824
+window=7 epoch=15/50 train=0.019590 val=0.019613
+window=7 epoch=16/50 train=0.019439 val=0.020209
+window=7 epoch=17/50 train=0.019518 val=0.020252
+window=7 epoch=18/50 train=0.019352 val=0.020026
+window=7 epoch=19/50 train=0.019310 val=0.020140
+window=7 epoch=20/50 train=0.019208 val=0.020009
+window=7 epoch=21/50 train=0.019284 val=0.019269
+window=7 epoch=22/50 train=0.019439 val=0.019736
+window=7 epoch=23/50 train=0.019353 val=0.019599
+window=7 epoch=24/50 train=0.019122 val=0.019167
+window=7 epoch=25/50 train=0.019134 val=0.020217
+window=7 epoch=26/50 train=0.018923 val=0.019140
+window=7 epoch=27/50 train=0.019263 val=0.019260
+window=7 epoch=28/50 train=0.018816 val=0.019305
+window=7 epoch=29/50 train=0.018920 val=0.019790
+window=7 epoch=30/50 train=0.018838 val=0.019210
+window=7 epoch=31/50 train=0.018975 val=0.019545
+window=7 epoch=32/50 train=0.019005 val=0.019906
+window=7 epoch=33/50 train=0.018926 val=0.019092
+window=7 epoch=34/50 train=0.018803 val=0.019032
+window=7 epoch=35/50 train=0.019078 val=0.019945
+window=7 epoch=36/50 train=0.018935 val=0.018989
+
+
+window=3 epoch=1/50 train=0.217829 val=0.038499
+window=3 epoch=2/50 train=0.033130 val=0.029108
+window=3 epoch=3/50 train=0.026753 val=0.025227
+window=3 epoch=4/50 train=0.023984 val=0.023931
+window=3 epoch=5/50 train=0.022727 val=0.022362
+window=3 epoch=6/50 train=0.022031 val=0.021907
+window=3 epoch=7/50 train=0.021278 val=0.021526
+window=3 epoch=8/50 train=0.021002 val=0.021325
+window=3 epoch=9/50 train=0.020739 val=0.020681
+window=3 epoch=10/50 train=0.020726 val=0.020634
+window=3 epoch=11/50 train=0.020306 val=0.020320
+window=3 epoch=12/50 train=0.020013 val=0.020865
+window=3 epoch=13/50 train=0.019936 val=0.020463
+window=3 epoch=14/50 train=0.019929 val=0.020113
+window=3 epoch=15/50 train=0.019797 val=0.019837
+window=3 epoch=16/50 train=0.019472 val=0.019663
+window=3 epoch=17/50 train=0.019531 val=0.019721
+window=3 epoch=18/50 train=0.019509 val=0.020593
+window=3 epoch=19/50 train=0.019515 val=0.019599
+window=3 epoch=20/50 train=0.019528 val=0.019326
+window=3 epoch=21/50 train=0.019304 val=0.019728
+window=3 epoch=22/50 train=0.019234 val=0.019404
+window=3 epoch=23/50 train=0.019640 val=0.019291
+window=3 epoch=24/50 train=0.019108 val=0.019284
+window=3 epoch=25/50 train=0.019105 val=0.019306
+window=3 epoch=26/50 train=0.019240 val=0.019088
+window=3 epoch=27/50 train=0.019130 val=0.019133
+window=3 epoch=28/50 train=0.019267 val=0.019224
+window=3 epoch=29/50 train=0.019044 val=0.019550
+window=3 epoch=30/50 train=0.019097 val=0.019214
+window=3 epoch=31/50 train=0.019185 val=0.019336
+window=3 epoch=32/50 train=0.019016 val=0.019763
+window=3 epoch=33/50 train=0.018841 val=0.019283
+window=3 epoch=34/50 train=0.018877 val=0.019130
+window=3 epoch=35/50 train=0.019075 val=0.019220
+window=3 epoch=36/50 train=0.019051 val=0.019159
+window=3 epoch=37/50 train=0.019305 val=0.019379
+window=3 epoch=38/50 train=0.018943 val=0.018944
+window=3 epoch=39/50 train=0.018822 val=0.019177
+window=3 epoch=40/50 train=0.018962 val=0.019676
+window=3 epoch=41/50 train=0.018953 val=0.018869
+window=3 epoch=42/50 train=0.018883 val=0.019277
+window=3 epoch=43/50 train=0.018925 val=0.019480
+window=3 epoch=44/50 train=0.018850 val=0.019040
+window=3 epoch=45/50 train=0.018817 val=0.019361
+window=3 epoch=46/50 train=0.018827 val=0.018901
+window=3 epoch=47/50 train=0.018830 val=0.019563
+window=3 epoch=48/50 train=0.018743 val=0.018842
+window=3 epoch=49/50 train=0.018994 val=0.018877
+window=3 epoch=50/50 train=0.018683 val=0.019312
+window=3 selected_epoch=48 common_test={'rmse_celsius': 1.3678377621439826, 'mae_celsius': 0.873910129070282, 'r2': 0.9824856519699097, 'pearson_r': 0.9912776328575975}
+window=7 epoch=1/50 train=0.224356 val=0.040447
+window=7 epoch=2/50 train=0.033638 val=0.030222
+window=7 epoch=3/50 train=0.027292 val=0.025817
+window=7 epoch=4/50 train=0.024218 val=0.023761
+window=7 epoch=5/50 train=0.023059 val=0.023512
+window=7 epoch=6/50 train=0.022054 val=0.022415
+window=7 epoch=7/50 train=0.021362 val=0.021744
+window=7 epoch=8/50 train=0.021069 val=0.021048
+window=7 epoch=9/50 train=0.020589 val=0.020642
+window=7 epoch=10/50 train=0.020495 val=0.020397
+window=7 epoch=11/50 train=0.020117 val=0.020405
+window=7 epoch=12/50 train=0.020179 val=0.019977
+window=7 epoch=13/50 train=0.019828 val=0.019958
+window=7 epoch=14/50 train=0.019700 val=0.019824
+window=7 epoch=15/50 train=0.019590 val=0.019613
+window=7 epoch=16/50 train=0.019439 val=0.020209
+window=7 epoch=17/50 train=0.019518 val=0.020252
+window=7 epoch=18/50 train=0.019352 val=0.020026
+window=7 epoch=19/50 train=0.019310 val=0.020140
+window=7 epoch=20/50 train=0.019208 val=0.020009
+window=7 epoch=21/50 train=0.019284 val=0.019269
+window=7 epoch=22/50 train=0.019439 val=0.019736
+window=7 epoch=23/50 train=0.019353 val=0.019599
+window=7 epoch=24/50 train=0.019122 val=0.019167
+window=7 epoch=25/50 train=0.019134 val=0.020217
+window=7 epoch=26/50 train=0.018923 val=0.019140
+window=7 epoch=27/50 train=0.019263 val=0.019260
+window=7 epoch=28/50 train=0.018816 val=0.019305
+window=7 epoch=29/50 train=0.018920 val=0.019790
+window=7 epoch=30/50 train=0.018838 val=0.019210
+window=7 epoch=31/50 train=0.018975 val=0.019545
+window=7 epoch=32/50 train=0.019005 val=0.019906
+window=7 epoch=33/50 train=0.018926 val=0.019092
+window=7 epoch=34/50 train=0.018803 val=0.019032
+window=7 epoch=35/50 train=0.019078 val=0.019945
+window=7 epoch=36/50 train=0.018935 val=0.018989
+
+
+window=3 epoch=1/50 train=0.217829 val=0.038499
+window=3 epoch=2/50 train=0.033130 val=0.029108
+window=3 epoch=3/50 train=0.026753 val=0.025227
+window=3 epoch=4/50 train=0.023984 val=0.023931
+window=3 epoch=5/50 train=0.022727 val=0.022362
+window=3 epoch=6/50 train=0.022031 val=0.021907
+window=3 epoch=7/50 train=0.021278 val=0.021526
+window=3 epoch=8/50 train=0.021002 val=0.021325
+window=3 epoch=9/50 train=0.020739 val=0.020681
+window=3 epoch=10/50 train=0.020726 val=0.020634
+window=3 epoch=11/50 train=0.020306 val=0.020320
+window=3 epoch=12/50 train=0.020013 val=0.020865
+window=3 epoch=13/50 train=0.019936 val=0.020463
+window=3 epoch=14/50 train=0.019929 val=0.020113
+window=3 epoch=15/50 train=0.019797 val=0.019837
+window=3 epoch=16/50 train=0.019472 val=0.019663
+window=3 epoch=17/50 train=0.019531 val=0.019721
+window=3 epoch=18/50 train=0.019509 val=0.020593
+window=3 epoch=19/50 train=0.019515 val=0.019599
+window=3 epoch=20/50 train=0.019528 val=0.019326
+window=3 epoch=21/50 train=0.019304 val=0.019728
+window=3 epoch=22/50 train=0.019234 val=0.019404
+window=3 epoch=23/50 train=0.019640 val=0.019291
+window=3 epoch=24/50 train=0.019108 val=0.019284
+window=3 epoch=25/50 train=0.019105 val=0.019306
+window=3 epoch=26/50 train=0.019240 val=0.019088
+window=3 epoch=27/50 train=0.019130 val=0.019133
+window=3 epoch=28/50 train=0.019267 val=0.019224
+window=3 epoch=29/50 train=0.019044 val=0.019550
+window=3 epoch=30/50 train=0.019097 val=0.019214
+window=3 epoch=31/50 train=0.019185 val=0.019336
+window=3 epoch=32/50 train=0.019016 val=0.019763
+window=3 epoch=33/50 train=0.018841 val=0.019283
+window=3 epoch=34/50 train=0.018877 val=0.019130
+window=3 epoch=35/50 train=0.019075 val=0.019220
+window=3 epoch=36/50 train=0.019051 val=0.019159
+window=3 epoch=37/50 train=0.019305 val=0.019379
+window=3 epoch=38/50 train=0.018943 val=0.018944
+window=3 epoch=39/50 train=0.018822 val=0.019177
+window=3 epoch=40/50 train=0.018962 val=0.019676
+window=3 epoch=41/50 train=0.018953 val=0.018869
+window=3 epoch=42/50 train=0.018883 val=0.019277
+window=3 epoch=43/50 train=0.018925 val=0.019480
+window=3 epoch=44/50 train=0.018850 val=0.019040
+window=3 epoch=45/50 train=0.018817 val=0.019361
+window=3 epoch=46/50 train=0.018827 val=0.018901
+window=3 epoch=47/50 train=0.018830 val=0.019563
+window=3 epoch=48/50 train=0.018743 val=0.018842
+window=3 epoch=49/50 train=0.018994 val=0.018877
+window=3 epoch=50/50 train=0.018683 val=0.019312
+window=3 selected_epoch=48 common_test={'rmse_celsius': 1.3678377621439826, 'mae_celsius': 0.873910129070282, 'r2': 0.9824856519699097, 'pearson_r': 0.9912776328575975}
+window=7 epoch=1/50 train=0.224356 val=0.040447
+window=7 epoch=2/50 train=0.033638 val=0.030222
+window=7 epoch=3/50 train=0.027292 val=0.025817
+window=7 epoch=4/50 train=0.024218 val=0.023761
+window=7 epoch=5/50 train=0.023059 val=0.023512
+window=7 epoch=6/50 train=0.022054 val=0.022415
+window=7 epoch=7/50 train=0.021362 val=0.021744
+window=7 epoch=8/50 train=0.021069 val=0.021048
+window=7 epoch=9/50 train=0.020589 val=0.020642
+window=7 epoch=10/50 train=0.020495 val=0.020397
+window=7 epoch=11/50 train=0.020117 val=0.020405
+window=7 epoch=12/50 train=0.020179 val=0.019977
+window=7 epoch=13/50 train=0.019828 val=0.019958
+window=7 epoch=14/50 train=0.019700 val=0.019824
+window=7 epoch=15/50 train=0.019590 val=0.019613
+window=7 epoch=16/50 train=0.019439 val=0.020209
+window=7 epoch=17/50 train=0.019518 val=0.020252
+window=7 epoch=18/50 train=0.019352 val=0.020026
+window=7 epoch=19/50 train=0.019310 val=0.020140
+window=7 epoch=20/50 train=0.019208 val=0.020009
+window=7 epoch=21/50 train=0.019284 val=0.019269
+window=7 epoch=22/50 train=0.019439 val=0.019736
+window=7 epoch=23/50 train=0.019353 val=0.019599
+window=7 epoch=24/50 train=0.019122 val=0.019167
+window=7 epoch=25/50 train=0.019134 val=0.020217
+window=7 epoch=26/50 train=0.018923 val=0.019140
+window=7 epoch=27/50 train=0.019263 val=0.019260
+window=7 epoch=28/50 train=0.018816 val=0.019305
+window=7 epoch=29/50 train=0.018920 val=0.019790
+window=7 epoch=30/50 train=0.018838 val=0.019210
+window=7 epoch=31/50 train=0.018975 val=0.019545
+window=7 epoch=32/50 train=0.019005 val=0.019906
+window=7 epoch=33/50 train=0.018926 val=0.019092
+window=7 epoch=34/50 train=0.018803 val=0.019032
+window=7 epoch=35/50 train=0.019078 val=0.019945
+window=7 epoch=36/50 train=0.018935 val=0.018989
+window=7 selected_epoch=41 common_test={'rmse_celsius': 1.3612863542450517, 'mae_celsius': 0.8726701736450195, 'r2': 0.982653021812439, 'pearson_r': 0.9913750861139368}
+window=14 epoch=1/50 train=0.216120 val=0.039806
+window=14 epoch=2/50 train=0.033356 val=0.029981
+window=14 epoch=3/50 train=0.027335 val=0.026073
+window=14 epoch=4/50 train=0.024503 val=0.024321
+window=14 epoch=5/50 train=0.023077 val=0.023352
+window=14 epoch=6/50 train=0.022351 val=0.022298
+window=14 epoch=7/50 train=0.021573 val=0.021676
+window=14 epoch=8/50 train=0.021265 val=0.021455
+window=14 epoch=9/50 train=0.020954 val=0.021012
+window=14 epoch=10/50 train=0.020642 val=0.021455
+window=14 epoch=11/50 train=0.020352 val=0.020609
+window=14 epoch=12/50 train=0.019930 val=0.020289
+window=14 epoch=13/50 train=0.019803 val=0.020098
+window=14 epoch=14/50 train=0.019632 val=0.019902
+window=14 epoch=15/50 train=0.019653 val=0.020103
+window=14 epoch=16/50 train=0.019585 val=0.019642
+window=14 epoch=17/50 train=0.019503 val=0.019655
+window=14 epoch=18/50 train=0.019193 val=0.020676
+window=14 epoch=19/50 train=0.019222 val=0.019735
+window=14 epoch=20/50 train=0.019405 val=0.019457
+window=14 epoch=21/50 train=0.019226 val=0.019707
+window=14 epoch=22/50 train=0.019121 val=0.019885
+window=14 epoch=23/50 train=0.019535 val=0.019829
+window=14 epoch=24/50 train=0.018975 val=0.019294
+window=14 epoch=25/50 train=0.018885 val=0.019384
+window=14 epoch=26/50 train=0.019210 val=0.019171
+window=14 epoch=27/50 train=0.019035 val=0.019827
+window=14 epoch=28/50 train=0.019093 val=0.019436
+window=14 epoch=29/50 train=0.019131 val=0.019173
+window=14 epoch=30/50 train=0.018823 val=0.019045
+window=14 epoch=31/50 train=0.018771 val=0.019070
+window=14 epoch=32/50 train=0.019086 val=0.020050
+window=14 epoch=33/50 train=0.018894 val=0.019088
+window=14 epoch=34/50 train=0.018883 val=0.020722
+window=14 epoch=35/50 train=0.018855 val=0.019071
+window=14 epoch=36/50 train=0.018855 val=0.019019
+window=14 epoch=37/50 train=0.018656 val=0.018962
+window=14 epoch=38/50 train=0.018968 val=0.019180
+window=14 epoch=39/50 train=0.018755 val=0.019104
+window=14 epoch=40/50 train=0.018697 val=0.018913
+window=14 epoch=41/50 train=0.018609 val=0.019147
+window=14 epoch=42/50 train=0.018805 val=0.018929
+window=14 epoch=43/50 train=0.018598 val=0.018970
+window=14 epoch=44/50 train=0.018678 val=0.019614
+window=14 epoch=45/50 train=0.018737 val=0.019265
+window=14 epoch=46/50 train=0.018628 val=0.018942
+window=14 epoch=47/50 train=0.018529 val=0.019070
+window=14 epoch=48/50 train=0.018681 val=0.020232
+window=14 epoch=49/50 train=0.018887 val=0.019035
+window=14 epoch=50/50 train=0.018622 val=0.018941
+window=14 selected_epoch=40 common_test={'rmse_celsius': 1.3588287746893075, 'mae_celsius': 0.8683741092681885, 'r2': 0.9827155470848083, 'pearson_r': 0.9913939282383901}
+ABLaTION_COMPLETE C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\window_ablation
+```
+
+Exit code: 0
+
+## 2026-10-14 — Selected-checkpoint seasonal and spatial analysis
+
+Command: `.\.venv\Scripts\python.exe experiments\reviewer_final_20261014\analyze_final_errors.py`
+
+```text
+Normalization stats: mean=25.044549 C, std=10.995944 C
+Model loaded from C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\convlstm_best.pth
+
+Evaluation test: 358 aligned samples
+Target dates: 2025-01-08T00:00:00.000000000 to 2025-12-31T00:00:00.000000000
+RMSE=1.364915 C; MAE=0.874530 C; R2=0.982832; Pearson r=0.991407
+{
+  "checkpoint": "experiments/reviewer_final_20261014/convlstm_best.pth",
+  "aligned_test_dates": [
+    "2025-01-08",
+    "2025-12-31"
+  ],
+  "samples": 358,
+  "seasonal": {
+    "DJF": {
+      "target_days": 83,
+      "rmse_celsius": 1.3078193664550781,
+      "mae_celsius": 0.8283376097679138
+    },
+    "MAM": {
+      "target_days": 92,
+      "rmse_celsius": 1.4941539764404297,
+      "mae_celsius": 0.9718661904335022
+    },
+    "JJA": {
+      "target_days": 92,
+      "rmse_celsius": 1.3956328630447388,
+      "mae_celsius": 0.9048813581466675
+    },
+    "SON": {
+      "target_days": 91,
+      "rmse_celsius": 1.242128610610962,
+      "mae_celsius": 0.787570595741272
+    }
+  },
+  "spatial_gridpoint_rmse": {
+    "min": {
+      "latitude": 14.75,
+      "longitude": 67.5,
+      "rmse_celsius": 0.2869308292865753
+    },
+    "mean": 1.1755183935165405,
+    "max": {
+      "latitude": 35.0,
+      "longitude": 100.0,
+      "rmse_celsius": 5.539139270782471
+    }
+  },
+  "high_error_point_35N_65E": {
+    "coordinate_latitude": 35.0,
+    "coordinate_longitude": 65.0,
+    "hourly_records": 8760,
+    "hourly_finite": true,
+    "daily_records_checked": 365,
+    "hourly_24h_max_matches_daily_max": true,
+    "max_abs_difference_K": 0.0,
+    "forecast_samples": 358,
+    "forecast_target_dates": [
+      "2025-01-08",
+      "2025-12-31"
+    ],
+    "last_input_day_matches_daily_series_max_abs_difference_C": 1.9073486328125e-06,
+    "targets_match_daily_series_max_abs_difference_C": 1.9073486328125e-06,
+    "largest_abs_error": {
+      "target_date": "2025-02-11",
+      "previous_input_date": "2025-02-10",
+      "previous_input_tmax_C": -1.920654296875,
+      "observed_target_tmax_C": -10.193449020385742,
+      "predicted_tmax_C": 4.100568771362305,
+      "absolute_error_C": 14.294017791748047
+    },
+    "conv3d_selected_checkpoint": "experiments/reviewer_final_20261014/convlstm_best.pth"
+  }
+}
+```
+
+Exit code: 0
+
+## 2026-10-14 ? Validation evaluator cross-check
+
+Command: `.\.venv\Scripts\python.exe experiments\reviewer_final_20261014\val_crosscheck.py`
+
+```text
+Evaluation val: 359 aligned samples
+Target dates: 2024-01-08 through 2024-12-31
+RMSE=1.356658 C; MAE=0.873059 C; R2=0.984065; Pearson r=0.992019
+Evaluator target alignment verified against daily targets.
+```
+
+Exit code: 0. A first temporary-script attempt exited 1 because the script ran outside the project import path; it failed before evaluation. The project-root script retry above succeeded.
+
+## 2026-10-14 ? Final syntax check
+
+Command: `.\.venv\Scripts\python.exe -m py_compile evaluate_model.py preprocessing\compute_extremes.py training\losses.py run_baseline_experiments.py experiments\reviewer_final_20261014\run_window_ablation.py experiments\reviewer_final_20261014\analyze_final_errors.py`
+
+```text
+All listed Python files compiled successfully.
+```
+
+Exit code: 0. The corrected completed ablation artifacts are preserved under `experiments/reviewer_final_20261014/window_ablation_final/`; the pre-existing tracked one-epoch artifacts in `window_ablation/` were restored to their original blob contents.
+
+import numpy as np
+from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score
+import json
+p='data/processed/tensors/test_X.npy'; y='data/processed/tensors/test_y.npy'
+X=np.load(p,mmap_mode='r');Y=np.load(y,mmap_mode='r');s=json.load(open('data/processed/mean_std.json'));m=float(s['mean']);d=float(s['std'])
+pred=np.asarray(X[7:,-1,0])*d+m;target=np.asarray(Y[7:,0])*d+m
+print('matched_dates=351; 2025-01-15 through 2025-12-31')
+print('persistence_rmse_celsius',float(np.sqrt(mean_squared_error(target.ravel(),pred.ravel()))))
+print('persistence_mae_celsius',float(mean_absolute_error(target.ravel(),pred.ravel())))
+print('persistence_r2',float(r2_score(target.ravel(),pred.ravel())))
+print('persistence_pearson_r',float(np.corrcoef(pred.ravel(),target.ravel())[0,1]))
+'@ | .\.venv\Scripts\python.exe -
+
+
+matched_dates=351; 2025-01-15 through 2025-12-31
+persistence_rmse_celsius 1.3958533935623685
+persistence_mae_celsius 0.8927555084228516
+persistence_r2 0.9817607998847961
+persistence_pearson_r 0.9908822105711548
+## 2026-10-14 — Selected checkpoint metric recheck
+
+Command: `.\.venv\Scripts\python.exe experiments\reviewer_final_20261014\verify_selected_checkpoints.py`
+
+```text
+.\.venv\Scripts\python.exe : Traceback (most recent call last):
+At line:2 char:61
++ ... check.log'; .\.venv\Scripts\python.exe experiments\reviewer_final_202 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\verify_s
+elected_checkpoints.py", line 40, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\verify_s
+elected_checkpoints.py", line 33, in main
+    measured=score(np.concatenate(ps),np.concatenate(ys)); expected=entry[split]
+                                                                    ~~~~~^^^^^^^
+KeyError: 'val'
+```
+
+Exit code: 1
+
+## 2026-10-14 — Selected checkpoint metric recheck retry
+
+Command: `.\.venv\Scripts\python.exe experiments\reviewer_final_20261014\verify_selected_checkpoints.py`
+
+```text
+.\.venv\Scripts\python.exe : Traceback (most recent call last):
+At line:2 char:67
++ ... retry.log'; .\.venv\Scripts\python.exe experiments\reviewer_final_202 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\verify_s
+elected_checkpoints.py", line 40, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Users\25mdsml006\Desktop\deep_learning\project\climate\climate2\experiments\reviewer_final_20261014\verify_s
+elected_checkpoints.py", line 35, in main
+    if max(delta.values())>1e-5:raise AssertionError(f'{name} {split} checkpoint mismatch: deltas={delta}')
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: lstm val checkpoint mismatch: deltas={'rmse': 1.5354942819836075, 'mae': 0.9993448257446289, 'r2':
+0.06167018413543701, 'correlation': 0.029169751337848382}
+```
+
+Exit code: 1
+
+## 2026-10-14 — Checkpoint to aggregate recheck (collected all model discrepancies)
+
+Command: `.\.venv\Scripts\python.exe experiments\reviewer_final_20261014\verify_selected_checkpoints.py`
+
+```text
+lstm {'val': {'metrics': {'rmse': 3.0871917879654243, 'mae': 2.0088422298431396, 'r2': 0.9174836277961731, 'correlation': 0.9603780009843647}, 'max_abs_metric_delta': 1.5354942819836075, 'matches_aggregate': False, 'samples': 359}, 'test': {'metrics': {'rmse': 2.9620641009434863, 'mae': 1.906995415687561, 'r2': 0.919144868850708, 'correlation': 0.9611562816154705}, 'max_abs_metric_delta': 1.3893335401981721, 'matches_aggregate': False, 'samples': 358}}
+cnn_lstm {'val': {'metrics': {'rmse': 1.3995886385651402, 'mae': 0.8996180891990662, 'r2': 0.983040452003479, 'correlation': 0.9914921169138822}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.4005166479889664, 'mae': 0.8986677527427673, 'r2': 0.981924295425415, 'correlation': 0.9909284355087896}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+convlstm {'val': {'metrics': {'rmse': 1.3566575787135982, 'mae': 0.8730589151382446, 'r2': 0.9840649366378784, 'correlation': 0.9920194329075844}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.3649147980337155, 'mae': 0.8745298981666565, 'r2': 0.982831597328186, 'correlation': 0.991407401812537}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+transformer {'val': {'metrics': {'rmse': 1.3979236788320364, 'mae': 0.8956495523452759, 'r2': 0.9830808043479919, 'correlation': 0.9915440563852548}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.4030249171256943, 'mae': 0.8987118005752563, 'r2': 0.9818595051765442, 'correlation': 0.9909356052009267}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+ALL_SELECTED_CHECKPOINTS_MATCH False
+```
+
+Exit code: 0
+
+## 2026-10-14 — LSTM checkpoint and history repair run
+
+Command: `.\.venv\Scripts\python.exe -u run_baseline_experiments.py --epochs 50 --batch-size 16 --seed 42 --device cuda --models lstm --output-dir experiments\reviewer_lstm_repaired_20261014`
+
+```text
+Selected device: cuda:0
+GPU: NVIDIA GeForce RTX 4070; PyTorch 2.5.1+cu121; CUDA runtime 12.1
+lstm epoch 1/50: train_loss=1.357386, val_loss=1.281001
+lstm epoch 2/50: train_loss=1.123565, val_loss=0.990448
+lstm epoch 3/50: train_loss=0.786988, val_loss=0.586715
+lstm epoch 4/50: train_loss=0.424891, val_loss=0.273033
+lstm epoch 5/50: train_loss=0.198155, val_loss=0.131722
+lstm epoch 6/50: train_loss=0.117567, val_loss=0.098101
+lstm epoch 7/50: train_loss=0.096348, val_loss=0.084477
+lstm epoch 8/50: train_loss=0.083325, val_loss=0.073258
+lstm epoch 9/50: train_loss=0.072423, val_loss=0.063895
+lstm epoch 10/50: train_loss=0.063432, val_loss=0.056250
+lstm epoch 11/50: train_loss=0.056249, val_loss=0.050330
+lstm epoch 12/50: train_loss=0.050686, val_loss=0.045828
+lstm epoch 13/50: train_loss=0.046467, val_loss=0.042652
+lstm epoch 14/50: train_loss=0.043333, val_loss=0.040119
+lstm epoch 15/50: train_loss=0.041050, val_loss=0.038493
+lstm epoch 16/50: train_loss=0.039341, val_loss=0.037194
+lstm epoch 17/50: train_loss=0.038131, val_loss=0.036281
+lstm epoch 18/50: train_loss=0.037229, val_loss=0.035623
+lstm epoch 19/50: train_loss=0.036466, val_loss=0.035188
+lstm epoch 20/50: train_loss=0.035848, val_loss=0.034556
+lstm epoch 21/50: train_loss=0.035295, val_loss=0.034147
+lstm epoch 22/50: train_loss=0.034788, val_loss=0.033803
+lstm epoch 23/50: train_loss=0.034351, val_loss=0.033478
+lstm epoch 24/50: train_loss=0.033901, val_loss=0.032996
+lstm epoch 25/50: train_loss=0.033520, val_loss=0.032641
+lstm epoch 26/50: train_loss=0.033053, val_loss=0.032400
+lstm epoch 27/50: train_loss=0.032675, val_loss=0.031963
+lstm epoch 28/50: train_loss=0.032286, val_loss=0.031625
+lstm epoch 29/50: train_loss=0.031948, val_loss=0.031236
+lstm epoch 30/50: train_loss=0.031586, val_loss=0.030961
+lstm epoch 31/50: train_loss=0.031239, val_loss=0.030624
+lstm epoch 32/50: train_loss=0.030841, val_loss=0.030395
+lstm epoch 33/50: train_loss=0.030509, val_loss=0.029991
+lstm epoch 34/50: train_loss=0.030257, val_loss=0.029651
+lstm epoch 35/50: train_loss=0.029916, val_loss=0.029397
+lstm epoch 36/50: train_loss=0.029590, val_loss=0.029073
+lstm epoch 37/50: train_loss=0.029332, val_loss=0.028921
+lstm epoch 38/50: train_loss=0.029000, val_loss=0.028583
+lstm epoch 39/50: train_loss=0.028712, val_loss=0.028253
+lstm epoch 40/50: train_loss=0.028486, val_loss=0.028004
+lstm epoch 41/50: train_loss=0.028177, val_loss=0.027781
+lstm epoch 42/50: train_loss=0.027923, val_loss=0.027463
+lstm epoch 43/50: train_loss=0.027615, val_loss=0.027632
+lstm epoch 44/50: train_loss=0.027409, val_loss=0.027047
+lstm epoch 45/50: train_loss=0.027162, val_loss=0.026776
+lstm epoch 46/50: train_loss=0.026850, val_loss=0.026533
+lstm epoch 47/50: train_loss=0.026604, val_loss=0.026265
+lstm epoch 48/50: train_loss=0.026363, val_loss=0.026086
+lstm epoch 49/50: train_loss=0.026149, val_loss=0.025957
+lstm epoch 50/50: train_loss=0.025865, val_loss=0.025641
+{
+  "protocol": {
+    "sequence_length": 7,
+    "forecast_horizon_days": 1,
+    "train_samples": 1819,
+    "validation_samples": 359,
+    "test_samples": 358,
+    "spatial_shape": [
+      121,
+      141
+    ],
+    "device": "cuda:0",
+    "seed": 42,
+    "metric_space": "same denormalized stored temperature scale for every model",
+    "normalization_unit": "degrees_Celsius",
+    "normalization_mean_celsius": 25.044549020486595,
+    "normalization_std_celsius": 10.99594436868629,
+    "loss_threshold_celsius": 37.25411376953127,
+    "loss_threshold_normalized": 1.1103698181499058,
+    "loss_threshold_metadata": {
+      "top_5_percent_celsius": 37.25411376953127,
+      "bottom_5_percent_celsius": -1.7535766601562273,
+      "quantile_method": "NumPy linear quantile (Hyndman-Fan Type 7)",
+      "scope": "training split only; daily maximum t2m over all grid cells and days",
+      "training_daily_records": 1826,
+      "training_grid_values": 31153386,
+      "training_date_range": [
+        "2019-01-01",
+        "2023-12-31"
+      ],
+      "input": "data/interim/train_daily.nc (t2m in K)",
+      "loss_weight": 5.0
+    },
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_runtime": "12.1",
+    "run_timestamp_utc": "2026-10-13T19:48:17.096197+00:00",
+    "epochs_requested": 50,
+    "output_directory": "C:\\Users\\25mdsml006\\Desktop\\deep_learning\\project\\climate\\climate2\\experiments\\reviewer_lstm_repaired_20261014"
+  },
+  "results": [
+    {
+      "model": "lstm",
+      "class": "LSTMBaseline",
+      "trainable_parameters": 4513,
+      "epochs": 50,
+      "epochs_requested": 50,
+      "epochs_completed": 50,
+      "batch_size": 16,
+      "optimizer": "Adam",
+      "learning_rate": 0.0001,
+      "loss": "ExtremeWeightedMSE",
+      "training_seconds": 331.793,
+      "best_epoch": 50,
+      "best_validation_loss": 0.025640719489234944,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3573862633161378,
+          "validation_loss": 1.2810013916181482
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.1235654207698085,
+          "validation_loss": 0.9904481587202653
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.7869884078962761,
+          "validation_loss": 0.5867152952629587
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.4248910874389766,
+          "validation_loss": 0.2730327737720116
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.19815530595287942,
+          "validation_loss": 0.1317222818084385
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.11756740422233154,
+          "validation_loss": 0.09810127131640911
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.09634786171087048,
+          "validation_loss": 0.08447729358854501
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.08332510926482971,
+          "validation_loss": 0.07325802192739818
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.07242330807473576,
+          "validation_loss": 0.06389544879936654
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.06343212965549085,
+          "validation_loss": 0.05625007342061271
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.05624944912759881,
+          "validation_loss": 0.05033021622701832
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.050685593858361244,
+          "validation_loss": 0.04582751688102017
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.04646718305976767,
+          "validation_loss": 0.04265177363286848
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.043333208384482486,
+          "validation_loss": 0.04011938793827658
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.04105008939248428,
+          "validation_loss": 0.038492569942837174
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.039341452547855545,
+          "validation_loss": 0.03719357911335385
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.03813066150535617,
+          "validation_loss": 0.03628097004864527
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.037228545288375596,
+          "validation_loss": 0.03562312953821991
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.0364658597922116,
+          "validation_loss": 0.03518758179700893
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.03584779867608296,
+          "validation_loss": 0.034555943763774376
+        },
+        {
+          "epoch": 21,
+          "train_loss": 0.035295397206618076,
+          "validation_loss": 0.034146895389194076
+        },
+        {
+          "epoch": 22,
+          "train_loss": 0.034787913343231926,
+          "validation_loss": 0.033802687311949936
+        },
+        {
+          "epoch": 23,
+          "train_loss": 0.03435089623784287,
+          "validation_loss": 0.0334777869284153
+        },
+        {
+          "epoch": 24,
+          "train_loss": 0.03390095230976218,
+          "validation_loss": 0.03299561628828878
+        },
+        {
+          "epoch": 25,
+          "train_loss": 0.03351989788771199,
+          "validation_loss": 0.032641092639254486
+        },
+        {
+          "epoch": 26,
+          "train_loss": 0.03305323104978653,
+          "validation_loss": 0.03239994317941044
+        },
+        {
+          "epoch": 27,
+          "train_loss": 0.0326754158820238,
+          "validation_loss": 0.031963165687478104
+        },
+        {
+          "epoch": 28,
+          "train_loss": 0.03228614979276532,
+          "validation_loss": 0.03162463689627855
+        },
+        {
+          "epoch": 29,
+          "train_loss": 0.03194830375478456,
+          "validation_loss": 0.031236252706983814
+        },
+        {
+          "epoch": 30,
+          "train_loss": 0.031586266939708015,
+          "validation_loss": 0.030960848150045975
+        },
+        {
+          "epoch": 31,
+          "train_loss": 0.031238784980878495,
+          "validation_loss": 0.030623995253573292
+        },
+        {
+          "epoch": 32,
+          "train_loss": 0.030840944253692503,
+          "validation_loss": 0.030394736434454502
+        },
+        {
+          "epoch": 33,
+          "train_loss": 0.030509308241961294,
+          "validation_loss": 0.02999131470594717
+        },
+        {
+          "epoch": 34,
+          "train_loss": 0.030256875300485837,
+          "validation_loss": 0.029651185011734135
+        },
+        {
+          "epoch": 35,
+          "train_loss": 0.02991643949950996,
+          "validation_loss": 0.029396660463965458
+        },
+        {
+          "epoch": 36,
+          "train_loss": 0.029590428708807417,
+          "validation_loss": 0.029073076646613037
+        },
+        {
+          "epoch": 37,
+          "train_loss": 0.029331688556754797,
+          "validation_loss": 0.028920856506928154
+        },
+        {
+          "epoch": 38,
+          "train_loss": 0.028999800597758668,
+          "validation_loss": 0.028583017825756386
+        },
+        {
+          "epoch": 39,
+          "train_loss": 0.028711621110376558,
+          "validation_loss": 0.028252729133743305
+        },
+        {
+          "epoch": 40,
+          "train_loss": 0.02848614621580693,
+          "validation_loss": 0.0280041234648746
+        },
+        {
+          "epoch": 41,
+          "train_loss": 0.02817658405228142,
+          "validation_loss": 0.02778115317873333
+        },
+        {
+          "epoch": 42,
+          "train_loss": 0.02792292124215971,
+          "validation_loss": 0.027463336151255215
+        },
+        {
+          "epoch": 43,
+          "train_loss": 0.027615215874424105,
+          "validation_loss": 0.0276318718071865
+        },
+        {
+          "epoch": 44,
+          "train_loss": 0.027408876766761143,
+          "validation_loss": 0.027046561767549618
+        },
+        {
+          "epoch": 45,
+          "train_loss": 0.027161744504905584,
+          "validation_loss": 0.026776119418766186
+        },
+        {
+          "epoch": 46,
+          "train_loss": 0.02685020952240417,
+          "validation_loss": 0.026533450121464935
+        },
+        {
+          "epoch": 47,
+          "train_loss": 0.026603672555402705,
+          "validation_loss": 0.02626471318628477
+        },
+        {
+          "epoch": 48,
+          "train_loss": 0.026362832357878226,
+          "validation_loss": 0.026086067213960316
+        },
+        {
+          "epoch": 49,
+          "train_loss": 0.026149090248764606,
+          "validation_loss": 0.025956788464732792
+        },
+        {
+          "epoch": 50,
+          "train_loss": 0.025864866725577598,
+          "validation_loss": 0.025640719489234944
+        }
+      ],
+      "validation": {
+        "rmse": 1.5516975059818168,
+        "mae": 1.0094974040985107,
+        "r2": 0.9791538119316101,
+        "correlation": 0.989547752322213
+      },
+      "test": {
+        "rmse": 1.5727305607453141,
+        "mae": 1.0160795450210571,
+        "r2": 0.9772056341171265,
+        "correlation": 0.9885678464754004
+      },
+      "checkpoint": "experiments\\reviewer_lstm_repaired_20261014\\lstm_best.pth",
+      "history_file": "experiments\\reviewer_lstm_repaired_20261014\\lstm_history.json"
+    }
+  ]
+}
+```
+
+Exit code: 0
+
+## 2026-10-14 — Final selected-checkpoint verification
+
+Command: `.\.venv\Scripts\python.exe experiments\reviewer_final_20261014\verify_selected_checkpoints.py`
+
+```text
+lstm {'val': {'metrics': {'rmse': 1.5516975059818168, 'mae': 1.0094974040985107, 'r2': 0.9791538119316101, 'correlation': 0.989547752322213}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.5727305607453141, 'mae': 1.0160795450210571, 'r2': 0.9772056341171265, 'correlation': 0.9885678464754004}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+cnn_lstm {'val': {'metrics': {'rmse': 1.3995886385651402, 'mae': 0.8996180891990662, 'r2': 0.983040452003479, 'correlation': 0.9914921169138822}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.4005166479889664, 'mae': 0.8986677527427673, 'r2': 0.981924295425415, 'correlation': 0.9909284355087896}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+convlstm {'val': {'metrics': {'rmse': 1.3566575787135982, 'mae': 0.8730589151382446, 'r2': 0.9840649366378784, 'correlation': 0.9920194329075844}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.3649147980337155, 'mae': 0.8745298981666565, 'r2': 0.982831597328186, 'correlation': 0.991407401812537}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+transformer {'val': {'metrics': {'rmse': 1.3979236788320364, 'mae': 0.8956495523452759, 'r2': 0.9830808043479919, 'correlation': 0.9915440563852548}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 359}, 'test': {'metrics': {'rmse': 1.4030249171256943, 'mae': 0.8987118005752563, 'r2': 0.9818595051765442, 'correlation': 0.9909356052009267}, 'max_abs_metric_delta': 0.0, 'matches_aggregate': True, 'samples': 358}}
+ALL_SELECTED_CHECKPOINTS_MATCH True
+```
+
+Exit code: 0
