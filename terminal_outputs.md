@@ -3179,3 +3179,16 @@ ALL_SELECTED_CHECKPOINTS_MATCH True
 ```
 
 Exit code: 0
+
+
+## 2026-10-14: Documentation synchronization
+
+Commands: inspected `README.md`, `reviewer_questions_answers.md`, `terminal_outputs.md`, and the final experiment JSON artifacts; updated documentation only.
+
+Files updated: `README.md`, `reviewer_questions_answers.md`; created `changes.md`. Existing terminal log content was retained and this record appended.
+
+Verification: values in the README and change log were copied from `experiments/reviewer_final_20261014/comparison_results.json`, `experiments/reviewer_final_20261014/window_ablation_final/window_ablation_results.json`, `experiments/reviewer_final_20261014/error_analysis.json`, and `experiments/reviewer_final_20261014/high_error_point_35N_65E.json`. No training or data rebuild was run. Exact validation/test source equality remains unverified.
+
+Documentation integrity check: UTF-8 decode passed for all edited Markdown files; code fences balanced in README/reviewer answers/log/data guide/change log; removed duplicate CNN-LSTM heading; no source, revision, checkpoint, or prior experiment artifact modified.
+
+Exit code: 0

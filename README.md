@@ -14,7 +14,9 @@
 
 A research pipeline for **next-day ERA5 2 m temperature forecasting**. The proposed class named `ConvLSTMModel` is implemented as a **Conv3D encoder-decoder**, not a recurrent ConvLSTM.
 
-The project provides a complete end-to-end pipeline for:
+The repository contains an ERA5 preprocessing and forecasting pipeline. The verified study run and its limits are summarized below; general-purpose pipeline scripts may require the original local data and configuration.
+
+The project provides components for:
 
 - 🌍 Climate data acquisition
 - 🛰 Data preprocessing
@@ -35,7 +37,8 @@ The framework is modular, reproducible, and configurable, making it suitable for
 - [Workflow](#-workflow)
 - [Dataset](#-dataset)
 - [Methodology](#-methodology)
-- [Results](#-results)
+- [Results](#results)
+- [Change log](changes.md)
 - [Project Structure](#-project-structure)
 - [Installation](#-installation)
 - [Configuration](#-configuration)
@@ -57,7 +60,7 @@ Climate temperature prediction is essential for agriculture, disaster management
 
 Traditional numerical weather prediction methods require significant computational resources and may struggle to accurately capture localized temperature variations over space and time.
 
-The proposed model is a 3D convolutional encoder-decoder over seven daily temperature maps. Separate LSTM, CNN-LSTM, and Transformer implementations are included as comparison models.
+The proposed implementation is a Conv3D encoder-decoder over seven daily temperature maps. Separate LSTM, CNN-LSTM, and Transformer implementations are included as comparison models. The `convlstm` identifier is a legacy compatibility name, not evidence of a recurrent ConvLSTM.
 
 The framework automates the complete forecasting pipeline, including:
 
@@ -72,11 +75,12 @@ The framework automates the complete forecasting pipeline, including:
 - Region: 5-35 N, 65-100 E; 121 x 141 grid at 0.25-degree spacing.
 - Splits: train 2019-2023 (43,824 hourly, 1,826 daily, 1,819 sequences); validation 2024 (8,784 hourly, 366 daily, 359 sequences); test 2025 (8,760 hourly, 365 daily, 358 sequences).
 - Daily fields are the maximum of 24 complete UTC hourly observations. Non-finite values are rejected, not imputed.
-- Training-only normalization: mean 25.044549 C, population std 10.995944 C. Training-only 95th percentile 37.254114 C; normalized loss threshold 1.110370 and extreme weight 5.
+- Training-only normalization: mean 25.044549 degrees C, population std 10.995944 degrees C. Training-only 95th percentile 37.254114 degrees C; normalized loss threshold 1.110370 and extreme weight 5.
+- Train/source equality was verified. Validation/test date ranges, cadence, dimensions, and finite values were checked; exact value-by-value equality against the raw source remains unverified.
 
 ## Corrected five-model comparison
 
-RTX 4070, seed 42, batch size 16, Adam at 1e-4, 50 epochs per learned model. Checkpoints were selected by validation loss; test metrics use aligned 2025 predictions and targets. Metrics are degrees C except R2 and Pearson r.
+RTX 4070, seed 42, batch size 16, Adam at 1e-4, 50 epochs per learned model. Checkpoints were selected by validation loss; test metrics use aligned 2025 predictions and targets. RMSE/MAE are degrees C; R-squared and Pearson r are separate dimensionless statistics.
 
 | Model | Parameters | Actual epochs | Best epoch | Test RMSE C | Test MAE C | Test R2 | Pearson r |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -141,9 +145,7 @@ observations remain important future work.
 
 # 📊 Results
 
-## Reviewer Evidence
-
-The current data audit, metric definitions, unresolved source-equality checks, high-error point trace, and point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md). Historical metric tables in older notes are not results of the corrected run.
+The current data audit, metric definitions, unresolved source-equality checks, high-error point trace, and point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md). The dated project change record is [changes.md](changes.md); command outputs and verification records are in [terminal_outputs.md](terminal_outputs.md). Historical metric tables in older notes are not results of the corrected run.
 
 # 📂 Project Structure
 
@@ -217,7 +219,7 @@ Before running the project, ensure your system has:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/climate2.git
+git clone https://github.com/nidhidhameliya/-Climate-Forecasting-RESEARCH.git
 
 cd climate2
 ```
@@ -428,8 +430,6 @@ model:
 ```
 
 ---
-
-## 2. CNN-LSTM
 
 ## 2. CNN-LSTM
 
@@ -927,8 +927,9 @@ Additional project documentation is available in the repository.
 
 | Document | Description |
 |----------|-------------|
-| `RESULTS_SUMMARY.md` | Experimental Results |
-| `RESULTS_SUMMARY_UPDATED.md` | Updated Performance |
+| `reviewer_questions_answers.md` | Evidence-based reviewer responses, verified results, and unresolved items |
+| `changes.md` | Dated summary of project documentation and experiment updates |
+| `terminal_outputs.md` | Important commands, outputs, and exit statuses |
 | `IMPLEMENTATION_ROADMAP.md` | Development Timeline |
 | `DECISION_TREE.md` | Workflow Guide |
 | `LIVE_STREAMING_GUIDE.md` | Streaming Prediction |

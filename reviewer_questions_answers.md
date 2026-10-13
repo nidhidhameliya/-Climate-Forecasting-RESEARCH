@@ -121,6 +121,6 @@ The first two commands reproduce the corrected threshold and validate saved prep
 - Matched-date window ablation artifacts: `experiments/reviewer_final_20261014/window_ablation_final/`.
 - Command records: `terminal_outputs.md`.
 
+## Documentation status (2026-10-14)
 
-
-
+README and change-log summaries were synchronized with the artifacts listed above. This does not change any data, checkpoint, metric, or experiment output. Exact raw-source value equality for validation/test remains **Unable to Confirm**; no new model training was performed as part of the documentation update.
