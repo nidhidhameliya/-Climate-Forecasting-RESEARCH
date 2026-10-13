@@ -95,12 +95,11 @@ Separate Conv3D models were selected on validation loss and evaluated on the sam
 | Input days | Best epoch | Test RMSE C | Test MAE C | Test R2 | Pearson r |
 |---:|---:|---:|---:|---:|---:|
 | Persistence | n/a | 1.395853 | 0.892756 | 0.981761 | 0.990882 |
-| Persistence | n/a | 1.395853 | 0.892756 | 0.981761 | 0.990882 |
 | 3 | 48 | 1.367838 | 0.873910 | 0.982486 | 0.991278 |
 | 7 | 41 | 1.361286 | 0.872670 | 0.982653 | 0.991375 |
 | 14 | 40 | 1.358829 | 0.868374 | 0.982716 | 0.991394 |
 
-Complete histories, checkpoints and aggregates are in `experiments/reviewer_final_20261014/` and `experiments/reviewer_final_20261014/window_ablation_final/`. Seasonal and spatial error results and the 35 N, 65 E trace are in `experiments/reviewer_final_20261014/error_analysis.json` and `high_error_point_35N_65E.json`. Full reviewer answers are in [reviewer_questions_answers.md](reviewer_questions_answers.md); command outputs are in [terminal_outputs.md](terminal_outputs.md).
+Complete histories and checkpoints are in `experiments/reviewer_final_20261014/` (LSTM repair: `experiments/reviewer_lstm_repaired_20261014/`); ablation artifacts are in `experiments/reviewer_final_20261014/window_ablation_final/`. Seasonal and spatial error results and the 35 N, 65 E trace are in `experiments/reviewer_final_20261014/error_analysis.json` and `high_error_point_35N_65E.json`. Full reviewer answers are in [reviewer_questions_answers.md](reviewer_questions_answers.md); command outputs are in [terminal_outputs.md](terminal_outputs.md).
 
 ## Reproduction
 
