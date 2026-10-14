@@ -1,331 +1,105 @@
-# Climate Forecasting Paper — Reviewer Revision Audit
+# Climate forecasting research status
 
-## Scope of this audit
+This document records the verified study setup, results, figure assets, and remaining limitations for the ERA5 next-day temperature forecasting project. It supersedes earlier draft audit statements in this file that described invalid normalization artifacts and preliminary smoke-run metrics.
 
-This document is a repository-based audit of the climate forecasting project as it exists in this workspace. It follows the project evidence in the checked-in code, data files, and output artifacts rather than the README narrative alone.
+## Study and data
 
-The following files were inspected and used as primary evidence:
+- **Source:** ERA5 hourly 2 m air temperature (`t2m`) in Kelvin.
+- **Study period:** 2019-01-01 00:00 through 2025-12-31 23:00 UTC.
+- **Region:** 5 deg N to 35 deg N and 65 deg E to 100 deg E, inclusive.
+- **Grid:** 121 x 141 at 0.25-degree spacing.
+- **Daily target:** maximum of the 24 hourly values for each complete UTC day.
+- **Forecast task:** use the preceding 7 daily temperature maps to forecast the next daily map.
+- **Splits:** windows are built independently inside each year range to avoid crossing split boundaries.
 
-- [README.md](README.md)
-- [config.yaml](config.yaml)
-- [preprocessing/subset_region.py](preprocessing/subset_region.py)
-- [preprocessing/split_by_year.py](preprocessing/split_by_year.py)
-- [preprocessing/resample_time.py](preprocessing/resample_time.py)
-- [preprocessing/normalize.py](preprocessing/normalize.py)
-- [preprocessing/create_sequences.py](preprocessing/create_sequences.py)
-- [models/convlstm.py](models/convlstm.py)
-- [models/cnn_lstm.py](models/cnn_lstm.py)
-- [models/transformer.py](models/transformer.py)
-- [models/lstm_baseline.py](models/lstm_baseline.py)
-- [training/train.py](training/train.py)
-- [training/test.py](training/test.py)
-- [training/metrics.py](training/metrics.py)
-- [training/losses.py](training/losses.py)
-- [run_baseline_experiments.py](run_baseline_experiments.py)
-- [reviewer_analysis.py](reviewer_analysis.py)
-- [change.md](change.md)
-- [outputs/reviewer_revision/dataset_and_architecture_metadata.json](outputs/reviewer_revision/dataset_and_architecture_metadata.json)
-- [outputs/reviewer_revision/test_model_comparison.json](outputs/reviewer_revision/test_model_comparison.json)
-- [experiments/reviewer_baselines/comparison_results.json](experiments/reviewer_baselines/comparison_results.json)
+| Split | Date range | Hourly records | Daily maps | 7-day input/target samples |
+|---|---|---:|---:|---:|
+| Train | 2019-01-01 to 2023-12-31 | 43,824 | 1,826 | 1,819 |
+| Validation | 2024-01-01 to 2024-12-31 | 8,784 | 366 | 359 |
+| Independent test | 2025-01-01 to 2025-12-31 | 8,760 | 365 | 358 |
 
-## Verified repository facts
+A seven-day input window paired with the following day's target yields `number of daily maps - 7` examples per split. The often-cited 1,089 sample count belongs to an earlier, different split description; it is not the sequence count for these current 2019-2025 tensors.
 
-### Dataset and source
+## Quality control and normalization
 
-The raw ERA5 directory contains 7 yearly NetCDF files, and the repository documents that the raw coverage is 2019-01-01 00:00 through 2025-12-31 23:00. The raw global grid in the source files is 721 latitude rows by 1440 longitude columns, consistent with ERA5.
+The current preprocessing rejects non-finite values; it does not claim to reconstruct missing ERA5 values by interpolation or station-based correction. A daily target is formed only from a complete set of 24 hourly UTC observations. Train/source equality was checked. Validation and test date ranges, cadence, dimensions, and finite values were checked, but exact value-by-value equality of those arrays against the raw source has not been established. ERA5 is a reanalysis reference, not independent station truth.
 
-This is confirmed by the checked-in project notes in [change.md](change.md) and by the actual raw file metadata read from the repository.
+Temperature is converted from Kelvin to Celsius. Normalization is a training-only z-score:
 
-### Study region
+`z = (temperature_C - training_mean_C) / training_population_std_C`
 
-The configured study region is explicitly defined in [config.yaml](config.yaml) as:
+The saved training statistics are mean 25.044549 C and population standard deviation 10.995944 C. The same statistics are applied to validation and test data; no statistics are fitted on either of those splits.
 
-- lat_min = 5
-- lat_max = 35
-- lon_min = 65
-- lon_max = 100
+## Model and method
 
-The region extraction script [preprocessing/subset_region.py](preprocessing/subset_region.py) subsets the raw data with:
+The proposed implementation is named `ConvLSTMModel` in code for compatibility, but it is **not a recurrent ConvLSTM**. It is a three-layer Conv3D encoder-decoder:
 
-- latitude=slice(35, 5)
-- longitude=slice(65, 100)
+1. Input `(B, 7, 1, 121, 141)` is rearranged to `(B, 1, 7, 121, 141)`.
+2. Encoder Conv3D: 1 to 32 channels, kernel 3 x 3 x 3, padding 1; ReLU.
+3. Encoder Conv3D: 32 to 32 channels, kernel 3 x 3 x 3, padding 1; ReLU.
+4. Decoder Conv3D: 32 to 1 channel, kernel 3 x 3 x 3, padding 1.
+5. The final temporal index is returned as the next-day grid.
 
-The synthetic dataset generator [generate_synthetic_data.py](generate_synthetic_data.py) confirms the intended grid size:
+The model has 29,441 trainable parameters. There are no recurrent gates, hidden state, or cell state. The word `convlstm` in the config is a legacy model identifier and should not be used to characterize the implemented architecture.
 
-- latitude start = 5, end = 35, step = 0.25
-- longitude start = 65, end = 100, step = 0.25
+The corrected comparison run used seed 42, batch size 16, Adam with learning rate 1e-4, and up to 50 epochs per learned model. Learned checkpoints were selected by validation loss. Test metrics below are computed over the aligned independent 2025 targets; RMSE and MAE are in degrees C. R2 and Pearson correlation are distinct statistics.
 
-This gives:
+| Method | Parameters | Best epoch | Test RMSE (C) | Test MAE (C) | Test R2 | Pearson r |
+|---|---:|---:|---:|---:|---:|---:|
+| Persistence | 0 | n/a | 1.402716 | 0.897498 | 0.981867 | 0.990937 |
+| LSTM | 4,513 | 50 | 1.572731 | 1.016080 | 0.977206 | 0.988568 |
+| CNN-LSTM | 18,049 | 48 | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
+| Conv3D encoder-decoder | 29,441 | 39 | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
+| Transformer | 275,105 | 36 | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
 
-- latitude count = ((35 - 5) / 0.25) + 1 = 121
-- longitude count = ((100 - 65) / 0.25) + 1 = 141
+The Conv3D result is a modest improvement over persistence in this single-seed, single-test-year comparison. It does not show that Conv3D is universally superior. The earlier reported pair R2 = 0.9720 and correlation = 0.2477 is not reproduced by the aligned test arrays. Such a pair should not be attributed to these same predictions and targets without identifying a different aggregation or calculation. Recomputed test values are R2 = 0.982832 and Pearson r = 0.991407.
 
-Therefore the study grid is verified as 121 × 141. The 0.25° spatial resolution is also consistent with the project’s synthetic grid specification and with the actual region subset.
+### Input-window ablation
 
-### Actual daily split files currently on disk
+The following runs use the same 351 test dates (2025-01-15 through 2025-12-31), with a validation-selected checkpoint for each learned model. They are single-seed results and the small differences are not significance-tested.
 
-The daily split files in [data/interim](data/interim) currently show:
+| Input days | Best epoch | Test RMSE (C) | Test MAE (C) | Test R2 | Pearson r |
+|---:|---:|---:|---:|---:|---:|
+| Persistence | n/a | 1.395853 | 0.892756 | 0.981761 | 0.990882 |
+| 3 | 48 | 1.367838 | 0.873910 | 0.982486 | 0.991278 |
+| 7 | 41 | 1.361286 | 0.872670 | 0.982653 | 0.991375 |
+| 14 | 40 | 1.358829 | 0.868374 | 0.982716 | 0.991394 |
 
-- train_daily.nc: 2019-01-01 through 2023-12-31, 1826 daily observations
-- val_daily.nc: 2024-01-01 through 2024-12-31, 366 daily observations
-- test_daily.nc: 2025-01-01 through 2025-12-31, 365 daily observations
+## Figures
 
-The repository therefore currently contains a 2019-2023 / 2024 / 2025 temporal split on disk, even though the configured split script and some stale reviewer artifacts still describe different historical ranges.
+Visualization images are kept in PNG format only. Their generation scripts now write PNG files only.
 
-### Model implementation
+- [`outputs/visualizations/`](outputs/visualizations/) contains verified test and validation diagnostics, example forecast maps, model comparison, window and seasonal errors, spatial errors, and training/validation histories. See the [visualization audit](outputs/visualizations/VISUALIZATION_AUDIT.md). Regenerate with `python outputs/visualizations/generate_verified_visualizations.py` from the repository root; the script runs inference and does not retrain the model.
+- [`paper_figures/`](paper_figures/FIGURE_CAPTIONS.md) contains six manuscript figures with captions and provenance. Regenerate PNGs with `python paper_figures/generate_paper_figures.py`.
+- [`paper_figures_explained/`](paper_figures_explained/HOW_TO_EXPLAIN.md) contains conference-oriented figures and plain-language speaking notes. Regenerate PNGs with `python paper_figures_explained/generate_relevant_figures.py`.
 
-The primary model is implemented in [models/convlstm.py](models/convlstm.py) and is a Conv3D encoder-decoder, not a true LSTM-cell implementation. The architecture is:
+The test maps use ERA5 as the target reference and cover the full rectangular grid, including ocean cells. They do not show station validation or political boundaries. Training-set evaluation figures are omitted because a verified training evaluation output set was unavailable.
 
-- encoder.0: Conv3d, in_channels = 1, out_channels = 32, kernel_size = (3, 3, 3), padding = 1
-- ReLU
-- encoder.2: Conv3d, in_channels = 32, out_channels = 32, kernel_size = (3, 3, 3), padding = 1
-- ReLU
-- decoder: Conv3d, in_channels = 32, out_channels = 1, kernel_size = (3, 3, 3), padding = 1
+## Novelty and limits
 
-The output is created by taking the last time step from the decoder result: `out[:, :, -1, :, :]`.
+The Conv3D layers themselves are established methods; this project should not claim a new neural architecture. Its contribution is an audited application-specific comparison of next-day ERA5 daily-maximum temperature maps over the stated region, with year-based splits, matched-date model comparisons, input-window ablation, and spatial/seasonal diagnostics. The current evidence is limited to one initialization and one held-out test year. No independent station observations, uncertainty intervals, repeated-seed significance tests, or operational numerical-weather-prediction comparison are available.
 
-This model has 29,441 trainable parameters, as reported in [outputs/reviewer_revision/dataset_and_architecture_metadata.json](outputs/reviewer_revision/dataset_and_architecture_metadata.json).
+The architecture of the historical baseline labelled ConvLSTM in the original Figure 3 cannot be confirmed from the available source. The repository's current model with the `convlstm` identifier is the Conv3D model described above; it must not be assumed to match that historical baseline.
 
-### Normalization and missing values
+## Future work and likely questions
 
-The current normalization path in [preprocessing/normalize.py](preprocessing/normalize.py) does the following:
+- Compare predictions against independent station observations and operational forecast products.
+- Repeat training across multiple seeds and years, report uncertainty, and test whether model differences are statistically meaningful.
+- Trace validation and test values back to the raw ERA5 files and document any rejected or corrected records. Do not claim imputation unless a reproducible procedure and evidence are added.
+- Obtain the original Figure 3 baseline implementation or relabel it accurately after its architecture is established.
+- Test additional atmospheric variables and forecast horizons with leakage-safe splits.
+- Compare against additional suitable methods under aligned dates, inputs, tuning budgets, and metrics.
+- Develop a defensible novelty claim through a broader literature comparison; the present contribution is the controlled evaluation and analysis, not a new Conv3D operator.
 
-- loads train_daily.nc, val_daily.nc, and test_daily.nc
-- converts Kelvin to Celsius with `value - 273.15`
-- computes mean and std from the training split only
-- computes `train_norm = (train - mean) / std`, and similarly for validation and test
-- applies `np.nan_to_num(..., nan=0.0)` after normalization
+## Key artifacts
 
-The saved [data/processed/mean_std.json](data/processed/mean_std.json) is currently invalid: it contains `NaN` values. This means the processed arrays are not publication-ready because the current normalization artifact is not finite.
+- [README.md](README.md): repository overview, dataset summary, and headline benchmark.
+- [reviewer_questions_answers.md](reviewer_questions_answers.md): detailed answers to likely reviewer questions.
+- [paper_figures_explained/HOW_TO_EXPLAIN.md](paper_figures_explained/HOW_TO_EXPLAIN.md): conference explanations and cross-question notes.
+- [experiments/reviewer_final_20261014/](experiments/reviewer_final_20261014/): corrected checkpoints, comparison results, and analyses.
+- [data/processed/mean_std.json](data/processed/mean_std.json): training-only normalization statistics.
 
-The project also contains a fix script [fix_normalization.py](fix_normalization.py), which is evidence that the current normalization artifacts were known to be stale or corrupted and that they should be regenerated before use in a paper.
+## References
 
-### Baselines and comparison scripts
-
-The repository contains baselines in:
-
-- [models/lstm_baseline.py](models/lstm_baseline.py)
-- [models/cnn_lstm.py](models/cnn_lstm.py)
-- [models/transformer.py](models/transformer.py)
-- [run_baseline_experiments.py](run_baseline_experiments.py)
-
-The baseline runner evaluates:
-
-- Persistence
-- LSTM
-- CNN-LSTM
-- ConvLSTM-equivalent current model
-- Transformer
-
-However, the checked-in comparison results are one-epoch smoke results and are not a final tuned research benchmark. The project notes in [change.md](change.md) explicitly say these results must be regenerated after the raw-derived preprocessing artifacts are repaired and verified.
-
-## Conflicts in the repository
-
-The repository contains unresolved or stale inconsistencies that must be reported instead of silently choosing one value.
-
-### Conflict 1: configured split ranges vs actual current split files
-
-In [preprocessing/split_by_year.py](preprocessing/split_by_year.py), the split script is configured to create:
-
-- train: 2019-01-01 to 2023-12-31
-- val: 2024-01-01 to 2024-12-31
-- test: 2025-01-01 to 2025-12-31
-
-However, some reviewer metadata files still describe older ranges, for example the stale output in [outputs/reviewer_revision/dataset_and_architecture_metadata.json](outputs/reviewer_revision/dataset_and_architecture_metadata.json) says:
-
-- train: 2019-01-01 to 2021-12-31
-- val: 2022-01-01 to 2022-12-31
-- test: 2023-01-01 to 2023-12-31
-
-The actual current split files on disk are the 2019-2023 / 2024 / 2025 ranges. The stale reviewer metadata is not the actual current experiment provenance.
-
-### Conflict 2: normalization artifact values
-
-The file [preprocessing/normalize.py](preprocessing/normalize.py) states that it converts Hz Kelvin to Celsius before normalization and computes the statistics from the training split only. The saved file [data/processed/mean_std.json](data/processed/mean_std.json) currently contains `NaN` values. The reviewer metadata in [outputs/reviewer_revision/dataset_and_architecture_metadata.json](outputs/reviewer_revision/dataset_and_architecture_metadata.json) lists a mean of 296.4881571400821 and std of 7.789291077828382, but those values are inconsistent with the current code output because the current processed arrays are invalid. The repository explicitly documents that the saved normalization statistics should be regenerated before publication.
-
-### Conflict 3: README claims vs current evidence
-
-The README and other documents state a 1,089-sequence train split and a 358/358 validation/test split. These values are not confirmed by the current daily split files because the processed tensor files are stale or invalid and should be regenerated. The project’s own reviewer notes state that the checked-in daily files and processed outputs must be regenerated before publication.
-
-## Current evidence from saved benchmark artifacts
-
-The checked-in comparison artifacts in [outputs/reviewer_revision/test_model_comparison.json](outputs/reviewer_revision/test_model_comparison.json) and [experiments/reviewer_baselines/comparison_results.json](experiments/reviewer_baselines/comparison_results.json) report the following values on the repository’s saved test arrays:
-
-| Model | RMSE | MAE | R² | Correlation |
-|---|---:|---:|---:|---:|
-| Persistence | 1.1277 | 0.9304 | 0.9794 | 0.9897 |
-| LSTM | 3.9517 | 3.1145 | 0.7466 | 0.9497 |
-| CNN-LSTM | 1.2654 | 1.0115 | 0.9740 | 0.9884 |
-| Conv3D/ConvLSTM-named model | 0.9376 | 0.7025 | 0.9857 | 0.9935 |
-| Transformer | 2.6350 | 2.1977 | 0.8874 | 0.9453 |
-
-These are actual project outputs, but the project notes explicitly state that they are not final scientific results because the preprocessing artifacts have not yet been regenerated and verified properly.
-
-## Reviewer-by-reviewer status
-
-### Reviewer 1
-
-[1] Study region — DONE
-
-Verified from [config.yaml](config.yaml), [preprocessing/subset_region.py](preprocessing/subset_region.py), and the synthetic grid definition: 5°N to 35°N, 65°E to 100°E, 121 × 141 grid, 0.25° resolution. The repository does not provide a separate scientific rationale for the region beyond the fact that it is the configured India study region.
-
-[2] Exact dates — PARTIAL
-
-The daily split files currently on disk are verified as:
-
-- train_daily.nc: 2019-01-01 to 2023-12-31
-- val_daily.nc: 2024-01-01 to 2024-12-31
-- test_daily.nc: 2025-01-01 to 2025-12-31
-
-The older reviewer metadata still refers to a different date range and must be corrected before publication. The processed tensor counts are not yet trustworthy because the normalization artifact is invalid.
-
-[3] ConvLSTM architecture — DONE
-
-The actual implementation is a Conv3D encoder-decoder with two encoder convolutions and one decoder convolution. Parameter count: 29,441.
-
-[4] Data split / leakage — PARTIAL
-
-There is no evidence of split leakage in the window generation itself because [preprocessing/create_sequences.py](preprocessing/create_sequences.py) creates windows within each split independently. However, the repository currently has conflicting split metadata and stale processed artifacts, so the final chronology is not yet publication-ready.
-
-[5] Missing values / normalization — PARTIAL
-
-Missing-value handling is not a verified scientific preprocessing method. The current pipeline does not remove NaNs before training in a robust way; it applies `np.nan_to_num` after normalization. The `mean_std.json` artifact is invalid (`NaN`), so the final normalization statement cannot be published without regeneration.
-
-[6] Figures — PARTIAL
-
-The repository contains reviewer-specific outputs under [outputs/reviewer_revision](outputs/reviewer_revision), including spatial maps and metrics, but the project notes explicitly say those artifacts must be regenerated after preprocessing is repaired and verified. The figures are therefore provisional, not final publication figures.
-
-### Reviewer 2
-
-[1] Baselines — PARTIAL
-
-The repository contains a fair baseline framework, but the saved baseline comparison is a one-epoch smoke benchmark rather than a final research benchmark. The project notes indicate that all baseline comparisons must be regenerated after preprocessing is fixed.
-
-[2] Why t2m — DONE
-
-The project states that the study focuses on 2-meter air temperature as a controlled single-variable forecasting task and explicitly notes that this is a scope decision, not a claim that additional variables are unnecessary.
-
-[3] Seasonal / regional / spatial analysis — PARTIAL
-
-The reviewer analysis script generates seasonal, regional, and spatial artifacts, but the repository’s own evidence says these outputs must be regenerated by a repaired preprocessing pipeline before publication.
-
-[4] R² / correlation — DONE
-
-The actual script [reviewer_analysis.py](reviewer_analysis.py) recomputes both metrics from the same flattened arrays and documents that R² and correlation are distinct statistics. The discrepancy in the paper is not a code bug; it is the consequence of using different metrics that are mathematically different.
-
-### Reviewer 3
-
-[1] Introduction / citations — PARTIAL
-
-The introduction and citation quality in the repo are not fully verified as publication-quality. The project contains dataset and software acknowledgements, but no thorough reviewer-level evidence audit is yet complete.
-
-[2] Figure 3 explanation — PARTIAL
-
-The repository contains reviewer baselines and comparison artifacts, but the project notes explicitly say these must be regenerated and the figure explanation should be tied to a reproducible experiment. The current state is not final.
-
-[3] Independent validation — NOT DONE
-
-There are no verified station observations or operational forecast comparisons available in the repository.
-
-[4] Literature comparison — PARTIAL
-
-The repository has a general references and dataset citation, but the comparison table is not yet fully verified against comparable studies and task definitions.
-
-[5] Conclusion moderation — PARTIAL
-
-The README and reviewer notes are more conservative than the older paper claims, but a final moderated conclusion cannot yet be fully verified because the dataset and normalized outputs remain unstable.
-
-## Verified final results
-
-The following are the only values that can be reported without invention from the current repository evidence:
-
-- Dataset period (raw ERA5): 2019-01-01 00:00 through 2025-12-31 23:00
-- Study region: latitude 5°N to 35°N; longitude 65°E to 100°E
-- Grid: 121 × 141
-- Spatial resolution: 0.25° latitude × 0.25° longitude
-- Primary model: Conv3D encoder-decoder named `ConvLSTMModel` in [models/convlstm.py](models/convlstm.py)
-- Parameter count: 29,441
-- Observed current daily files: train 1826 / val 366 / test 365
-- Current normalization artifact: invalid (`NaN` mean/std in [data/processed/mean_std.json](data/processed/mean_std.json))
-- Current saved benchmark values from the artifact JSON: Persistence RMSE 1.1277, MAE 0.9304, R² 0.9794, correlation 0.9897; Conv3D checkpoint RMSE 1.8823, MAE 1.6127, R² 0.9425, correlation 0.9720
-
-## Not verified / still required
-
-- A final publication-grade normalization pass from valid training statistics
-- Final processed train/validation/test arrays and sequence-count verification
-- Final tuned baseline comparison under the same preprocessing and split protocol
-- Independent external validation
-- Final publication-ready figures and tables
-- A final corrected paper conclusion and literature comparison table
-
-## Files changed
-
-- [research.md](research.md) created as the audit and revision-status record.
-
-## Files generated
-
-- [outputs/reviewer_revision/dataset_and_architecture_metadata.json](outputs/reviewer_revision/dataset_and_architecture_metadata.json)
-- [outputs/reviewer_revision/test_model_comparison.json](outputs/reviewer_revision/test_model_comparison.json)
-- [experiments/reviewer_baselines/comparison_results.json](experiments/reviewer_baselines/comparison_results.json)
-- [outputs/reviewer_revision/seasonal_metrics.csv](outputs/reviewer_revision/seasonal_metrics.csv)
-- [outputs/reviewer_revision/regional_metrics.csv](outputs/reviewer_revision/regional_metrics.csv)
-- [outputs/reviewer_revision/spatial_rmse.png](outputs/reviewer_revision/spatial_rmse.png)
-- [outputs/reviewer_revision/spatial_mae.png](outputs/reviewer_revision/spatial_mae.png)
-- [outputs/reviewer_revision/spatial_bias.png](outputs/reviewer_revision/spatial_bias.png)
-
-# Reviewer Revision Status
-
-## Reviewer 1
-[1] Study region — DONE
-[2] Exact dates — PARTIAL
-[3] ConvLSTM architecture — DONE
-[4] Data split/leakage — PARTIAL
-[5] Missing values/normalization — PARTIAL
-[6] Figures — PARTIAL
-
-## Reviewer 2
-[1] Baselines — PARTIAL
-[2] Why t2m — DONE
-[3] Seasonal/regional/spatial analysis — PARTIAL
-[4] R²/correlation — DONE
-
-## Reviewer 3
-[1] Introduction/citations — PARTIAL
-[2] Figure 3 explanation — PARTIAL
-[3] Independent validation — NOT DONE
-[4] Literature comparison — PARTIAL
-[5] Conclusion moderation — PARTIAL
-
-## Verified Final Results
-- Dataset period: Raw ERA5 data covers 2019-01-01 00:00 to 2025-12-31 23:00; current daily split files are 2019-2023 train, 2024 validation, and 2025 test.
-- Study region: 5°N to 35°N, 65°E to 100°E.
-- Grid: 121 × 141.
-- Samples: current daily split files are 1826 / 366 / 365 for train / validation / test.
-- Input window: 7 days (verified in [config.yaml](config.yaml) and [preprocessing/create_sequences.py](preprocessing/create_sequences.py)).
-- Forecast horizon: 1 day.
-- Train/validation/test: current on-disk chronology is 2019-2023 / 2024 / 2025, but the processed tensor pipeline is not final because the normalization artifact is invalid.
-- ConvLSTM architecture: two Conv3D encoder layers with 32 channels and one Conv3D decoder, ReLU activations, padding 1, 29,441 parameters.
-- Parameters: 29,441.
-- RMSE: current saved checkpoint artifact reported RMSE 1.8823 on the repository’s saved test arrays; the persistence baseline was 1.1277.
-- MAE: current saved checkpoint artifact reported MAE 1.6127; persistence was 0.9304.
-- R²: current saved checkpoint artifact reported R² 0.9425; persistence was 0.9794.
-- Correlation: current saved checkpoint artifact reported correlation 0.9720; persistence was 0.9897.
-
-## NOT VERIFIED / STILL REQUIRED
-- Final publication-grade preprocessing output
-- Final regenerated benchmark metrics under a valid normalized dataset
-- Independent external validation
-- Fully revised literature and conclusion sections
-- Final figure package for a camera-ready manuscript
-
-## Files Changed
-- [research.md](research.md)
-
-## Files Generated
-- [outputs/reviewer_revision/dataset_and_architecture_metadata.json](outputs/reviewer_revision/dataset_and_architecture_metadata.json)
-- [outputs/reviewer_revision/test_model_comparison.json](outputs/reviewer_revision/test_model_comparison.json)
-- [outputs/reviewer_revision/seasonal_metrics.csv](outputs/reviewer_revision/seasonal_metrics.csv)
-- [outputs/reviewer_revision/regional_metrics.csv](outputs/reviewer_revision/regional_metrics.csv)
-- [outputs/reviewer_revision/spatial_rmse.png](outputs/reviewer_revision/spatial_rmse.png)
-- [outputs/reviewer_revision/spatial_mae.png](outputs/reviewer_revision/spatial_mae.png)
-- [outputs/reviewer_revision/spatial_bias.png](outputs/reviewer_revision/spatial_bias.png)
+1. Hersbach, H. et al. (2020). The ERA5 global reanalysis. *Quarterly Journal of the Royal Meteorological Society*, 146, 1999-2049.
+2. Shi, X. et al. (2015). Convolutional LSTM Network: A Machine Learning Approach for Precipitation Nowcasting. *Advances in Neural Information Processing Systems*.
