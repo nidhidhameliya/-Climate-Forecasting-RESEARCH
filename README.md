@@ -162,6 +162,62 @@ observations remain important future work.
 
 The current data audit, metric definitions, unresolved source-equality checks, high-error point trace, and point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md). The dated project change record is [changes.md](changes.md); command outputs and verification records are in [terminal_outputs.md](terminal_outputs.md). Historical metric tables in older notes are not results of the corrected run.
 
+---
+
+## 📈 Results Visualizations
+
+All figures below are generated from the verified checkpoint on the independent 2025 held-out test set.
+
+---
+
+### Figure 1 — Model Comparison (RMSE · MAE · R²)
+
+> Held-out 2025 performance of all six forecasting methods across RMSE, MAE, and R². Conv3D achieves the lowest RMSE (1.365 °C) among all learned architectures.
+
+![Model comparison — held-out 2025 test set](paper_figures/fig1_model_comparison.png)
+
+---
+
+### Figure 2 — Input-Window Ablation
+
+> Conv3D models trained with 3, 7, and 14 days of input history, evaluated on the same 351 matched 2025 target dates. Longer windows provide marginal but consistent improvement.
+
+![Input-window ablation on matched 2025 dates](paper_figures/fig2_input_window_ablation.png)
+
+---
+
+### Figure 3 — Seasonal Test Errors
+
+> RMSE and MAE broken down by meteorological season (DJF, MAM, JJA, SON) for the Conv3D model on the 2025 test set. MAM (pre-monsoon) shows the highest error.
+
+![Seasonal test error — Conv3D on 2025](paper_figures/fig3_seasonal_errors.png)
+
+---
+
+### Figure 4 — Spatial Distribution of Test Errors
+
+> Per-grid-cell RMSE and MAE maps averaged over all 358 aligned 2025 test forecasts. Higher errors appear along the Himalayan foothills and northwest India — areas with strong temperature gradients.
+
+![Spatial distribution of 2025 test errors](paper_figures/fig4_spatial_test_errors.png)
+
+---
+
+### Figure 5 — Representative Forecast Map (2025-09-28)
+
+> Side-by-side view of the previous-day Tmax input, the observed ERA5 target, the Conv3D prediction, and the absolute error for a median-error test date.
+
+![Representative median-error test forecast](paper_figures/fig5_representative_test_map.png)
+
+---
+
+### Figure 6 — Training & Validation Loss Curves
+
+> Validation loss trajectories for all five learned models over 50 epochs. Dots mark the checkpoint selected by minimum validation loss for each model.
+
+![Validation loss during training](paper_figures/fig6_training_validation_curves.png)
+
+---
+
 # 📂 Project Structure
 
 The project is organized into modular components for easy development, maintenance, and experimentation.
