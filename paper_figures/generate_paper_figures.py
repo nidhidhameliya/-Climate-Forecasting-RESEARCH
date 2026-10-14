@@ -21,6 +21,7 @@ import torch.nn as nn
 ROOT = Path(__file__).resolve().parents[1]
 OUT = Path(__file__).resolve().parent
 EXP = ROOT / "experiments" / "reviewer_final_20261014"
+COMPARISON = ROOT / "experiments" / "reviewer_comparison_with_recurrent_convlstm_20261014" / "comparison_results.csv"
 ABL = EXP / "window_ablation_final"
 torch.set_num_threads(min(4, torch.get_num_threads()))
 
@@ -52,11 +53,13 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 
 def comparison_figure() -> None:
-    rows = read_csv(EXP / "comparison_results.csv")
+    rows = read_csv(COMPARISON)
     names = ["Persistence" if r["model"] == "Persistence" else
-             "Conv3D" if r["model"] == "convlstm" else r["model"].replace("_", "-").upper()
+             "Conv3D" if r["model"] == "convlstm" else
+             "ConvLSTM" if r["model"] in ("recurrent_convlstm", "ConvLSTM") else
+             r["model"].replace("_", "-").upper()
              for r in rows]
-    colors = [COLORS["gray"], COLORS["blue"], COLORS["teal"], COLORS["orange"], COLORS["purple"]]
+    colors = [COLORS["gray"], COLORS["blue"], COLORS["teal"], COLORS["orange"], COLORS["purple"], COLORS["red"]]
     metrics = [("test_rmse", "RMSE (°C)", (0, 1.75)),
                ("test_mae", "MAE (°C)", (0, 1.15)),
                ("test_r2", "R²", (0.965, 0.99))]
@@ -238,10 +241,16 @@ def training_history_figure() -> None:
     model_specs = [("convlstm", "Conv3D", COLORS["blue"]),
                    ("cnn_lstm", "CNN-LSTM", COLORS["teal"]),
                    ("transformer", "Transformer", COLORS["purple"]),
-                   ("lstm", "LSTM", COLORS["orange"])]
+                   ("lstm", "LSTM", COLORS["orange"]),
+                   ("recurrent_convlstm", "ConvLSTM", COLORS["red"])]
     fig, ax = plt.subplots(figsize=(6.4, 3.6))
     for key, label, color in model_specs:
-        history_dir = ROOT / "experiments" / "reviewer_lstm_repaired_20261014" if key == "lstm" else EXP
+        if key == "lstm":
+            history_dir = ROOT / "experiments" / "reviewer_lstm_repaired_20261014"
+        elif key == "recurrent_convlstm":
+            history_dir = ROOT / "experiments" / "reviewer_recurrent_convlstm_20261014"
+        else:
+            history_dir = EXP
         data = json.loads((history_dir / f"{key}_history.json").read_text(encoding="utf-8"))
         hist = data["history"]
         ax.plot([r["epoch"] for r in hist], [r["validation_loss"] for r in hist],

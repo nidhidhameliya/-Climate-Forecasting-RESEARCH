@@ -1,0 +1,2 @@
+model,trainable_parameters,epochs_completed,best_epoch,best_validation_loss,training_seconds,validation_rmse,validation_mae,validation_r2,validation_correlation,test_rmse,test_mae,test_r2,test_correlation
+recurrent_convlstm,38177,50,49,0.01926989517296138,489.302,1.3713978052590978,0.8820029497146606,0.9837167859077454,0.9918877052027177,1.3785302187070654,0.8828738331794739,0.9824873805046082,0.991279621560664

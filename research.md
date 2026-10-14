@@ -32,7 +32,7 @@ The saved training statistics are mean 25.044549 C and population standard devia
 
 ## Model and method
 
-The proposed implementation is named `ConvLSTMModel` in code for compatibility, but it is **not a recurrent ConvLSTM**. It is a three-layer Conv3D encoder-decoder:
+The proposed implementation is named `ConvLSTMModel` in code for compatibility, but it is **not a ConvLSTM**. It is a three-layer Conv3D encoder-decoder:
 
 1. Input `(B, 7, 1, 121, 141)` is rearranged to `(B, 1, 7, 121, 141)`.
 2. Encoder Conv3D: 1 to 32 channels, kernel 3 x 3 x 3, padding 1; ReLU.
@@ -42,7 +42,7 @@ The proposed implementation is named `ConvLSTMModel` in code for compatibility, 
 
 The model has 29,441 trainable parameters. There are no recurrent gates, hidden state, or cell state. The word `convlstm` in the config is a legacy model identifier and should not be used to characterize the implemented architecture.
 
-The corrected comparison run used seed 42, batch size 16, Adam with learning rate 1e-4, and up to 50 epochs per learned model. Learned checkpoints were selected by validation loss. Test metrics below are computed over the aligned independent 2025 targets; RMSE and MAE are in degrees C. R2 and Pearson correlation are distinct statistics.
+The original five-method comparison used seed 42, batch size 16, Adam with learning rate 1e-4, and up to 50 epochs per learned model. A genuine ConvLSTM was subsequently trained with the same data split, seed, batch size, optimizer, loss and 50-epoch budget; its checkpoint was selected by validation loss. All learned checkpoints are validation-selected. Test metrics below are computed over the aligned independent 2025 targets; RMSE and MAE are in degrees C. R2 and Pearson correlation are distinct statistics.
 
 | Method | Parameters | Best epoch | Test RMSE (C) | Test MAE (C) | Test R2 | Pearson r |
 |---|---:|---:|---:|---:|---:|---:|
@@ -51,8 +51,9 @@ The corrected comparison run used seed 42, batch size 16, Adam with learning rat
 | CNN-LSTM | 18,049 | 48 | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
 | Conv3D encoder-decoder | 29,441 | 39 | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
 | Transformer | 275,105 | 36 | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
+| ConvLSTM baseline | 38,177 | 49 | 1.378530 | 0.882874 | 0.982487 | 0.991280 |
 
-The Conv3D result is a modest improvement over persistence in this single-seed, single-test-year comparison. It does not show that Conv3D is universally superior. The earlier reported pair R2 = 0.9720 and correlation = 0.2477 is not reproduced by the aligned test arrays. Such a pair should not be attributed to these same predictions and targets without identifying a different aggregation or calculation. Recomputed test values are R2 = 0.982832 and Pearson r = 0.991407.
+On the full 358-date 2025 test set, Conv3D RMSE is 1.364915 C and the ConvLSTM baseline RMSE is 1.378530 C (a 0.013615 C difference); persistence is 1.402716 C. These are single-seed results and the small Conv3D versus ConvLSTM difference is not significance-tested. The Conv3D result is a modest improvement over persistence in this single-seed, single-test-year comparison. It does not show that Conv3D is universally superior. The earlier reported pair R2 = 0.9720 and correlation = 0.2477 is not reproducible from preserved artifacts: the original predictions, target array, and metric-calculation code that produced r=0.2477 are unavailable. Therefore its specific cause cannot be established; possible causes such as misalignment, spatial aggregation, or a coding error are hypotheses only and must not be presented as fact. On the current aligned test arrays, the Conv3D metrics are R2 = 0.982832 and Pearson r = 0.991407.
 
 ### Input-window ablation
 
@@ -79,14 +80,14 @@ The test maps use ERA5 as the target reference and cover the full rectangular gr
 
 The Conv3D layers themselves are established methods; this project should not claim a new neural architecture. Its contribution is an audited application-specific comparison of next-day ERA5 daily-maximum temperature maps over the stated region, with year-based splits, matched-date model comparisons, input-window ablation, and spatial/seasonal diagnostics. The current evidence is limited to one initialization and one held-out test year. No independent station observations, uncertainty intervals, repeated-seed significance tests, or operational numerical-weather-prediction comparison are available.
 
-The architecture of the historical baseline labelled ConvLSTM in the original Figure 3 cannot be confirmed from the available source. The repository's current model with the `convlstm` identifier is the Conv3D model described above; it must not be assumed to match that historical baseline.
+The new ConvLSTM baseline is a one-layer ConvLSTM: 32 hidden channels; a 3x3 convolution over concatenated input and hidden state produces four gate maps; sigmoid input, forget, and output gates and a tanh candidate update the cell and hidden states for each of the seven input days; a 1x1 Conv2d projects the final hidden state to the next-day temperature map. It has 38,177 trainable parameters. The original Figure 3 baseline implementation remains unverified; do not claim this new implementation is identical to that historical figure unless the figure/source is checked. The legacy `convlstm` identifier still maps to the Conv3D model.
 
 ## Future work and likely questions
 
 - Compare predictions against independent station observations and operational forecast products.
 - Repeat training across multiple seeds and years, report uncertainty, and test whether model differences are statistically meaningful.
 - Trace validation and test values back to the raw ERA5 files and document any rejected or corrected records. Do not claim imputation unless a reproducible procedure and evidence are added.
-- Obtain the original Figure 3 baseline implementation or relabel it accurately after its architecture is established.
+- Reconcile the historical Figure 3 baseline with the newly implemented ConvLSTM; identify it as a new baseline until the original source is verified.
 - Test additional atmospheric variables and forecast horizons with leakage-safe splits.
 - Compare against additional suitable methods under aligned dates, inputs, tuning budgets, and metrics.
 - Develop a defensible novelty claim through a broader literature comparison; the present contribution is the controlled evaluation and analysis, not a new Conv3D operator.

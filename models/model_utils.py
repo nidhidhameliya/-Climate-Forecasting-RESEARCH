@@ -3,6 +3,7 @@ from models.convlstm import ConvLSTMModel
 from models.cnn_lstm import CNNLSTMModel
 from models.transformer import SpatioTemporalTransformer
 from models.lstm_baseline import LSTMBaseline
+from models.recurrent_convlstm import RecurrentConvLSTM
 
 
 def get_model(config):
@@ -11,6 +12,9 @@ def get_model(config):
 
     if model_name == "convlstm":
         return ConvLSTMModel(config)
+
+    elif model_name == "recurrent_convlstm":
+        return RecurrentConvLSTM(config)
 
     elif model_name == "cnn_lstm":
         return CNNLSTMModel(config)

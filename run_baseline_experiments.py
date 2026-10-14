@@ -28,7 +28,7 @@ from training.losses import get_loss
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_OUTPUT = ROOT / "experiments" / "reviewer_baselines"
-MODEL_NAMES = ("persistence", "lstm", "cnn_lstm", "convlstm", "transformer")
+MODEL_NAMES = ("persistence", "lstm", "cnn_lstm", "convlstm", "transformer", "recurrent_convlstm")
 
 
 def set_seed(seed: int) -> None:

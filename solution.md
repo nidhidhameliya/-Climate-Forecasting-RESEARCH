@@ -104,16 +104,11 @@ The data loader and training/validation code were transposing these tensors agai
 
 ## Problem 7: R2 and Correlation Were Confused
 
-The values `R2 = 0.9720` and correlation `0.2477` do not appear in the current repository artifacts as a valid pair.
+The old manuscript values `R2 = 0.9720` and correlation `r = 0.2477` cannot be reproduced as a valid pair from current artifacts. Their specific origin is unverified because the original predictions and calculation code are unavailable.
 
-When the saved test prediction and target arrays were flattened identically:
+A separate historical diagnostic reported correlation near `0.9720` and R2 near `0.9425` for its saved arrays. This does not establish the origin of the manuscript's `r=0.2477`; those source predictions and metric code remain unavailable. Do not use the historical diagnostic to infer or explain the manuscript discrepancy. R2 and Pearson correlation are distinct statistics, and the current evaluation computes them from the same aligned arrays.
 
-- Correlation was approximately `0.9720`.
-- R2 was approximately `0.9425`.
-
-The values are different because R2 and correlation are different statistics. The corrected analysis calculates both from the same prediction and target arrays.
-
-The old value `0.2477` was not found in the main current metric code or saved JSON outputs. It should not be reported unless an older notebook, figure, log, or paper draft identifies its origin.
+The old value `0.2477` is unsupported by current outputs. Do not report it unless its original notebook, prediction array, or evaluation log is recovered.
 
 ## Problem 8: Seasonal, Regional, and Spatial Analysis
 

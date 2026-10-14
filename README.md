@@ -1,4 +1,4 @@
-# 🌍 Climate Temperature Forecasting with Conv3D
+# ðŸŒ Climate Temperature Forecasting with Conv3D
 
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -10,27 +10,27 @@
 
 ---
 
-# 📖 Climate Temperature Forecasting
+# ðŸ“– Climate Temperature Forecasting
 
-A research pipeline for **next-day ERA5 2 m temperature forecasting**. The proposed class named `ConvLSTMModel` is implemented as a **Conv3D encoder-decoder**, not a recurrent ConvLSTM.
+A research pipeline for **next-day ERA5 2 m temperature forecasting**. The proposed class named `ConvLSTMModel` is implemented as a **Conv3D encoder-decoder**, not a ConvLSTM.
 
 The repository contains an ERA5 preprocessing and forecasting pipeline. The verified study run and its limits are summarized below; general-purpose pipeline scripts may require the original local data and configuration.
 
 The project provides components for:
 
-- 🌍 Climate data acquisition
-- 🛰 Data preprocessing
-- 📊 Sequence generation
-- 🧠 Deep learning model training
-- 📈 Model evaluation
-- 🌡 Temperature prediction
-- 📉 Performance visualization
+- ðŸŒ Climate data acquisition
+- ðŸ›° Data preprocessing
+- ðŸ“Š Sequence generation
+- ðŸ§  Deep learning model training
+- ðŸ“ˆ Model evaluation
+- ðŸŒ¡ Temperature prediction
+- ðŸ“‰ Performance visualization
 
 The framework is modular, reproducible, and configurable, making it suitable for research and real-world climate forecasting applications.
 
 ---
 
-# 📑 Table of Contents
+# ðŸ“‘ Table of Contents
 
 - [Project Overview](#-project-overview)
 - [Key Features](#-key-features)
@@ -54,13 +54,13 @@ The framework is modular, reproducible, and configurable, making it suitable for
 
 ---
 
-# 🎯 Project Overview
+# ðŸŽ¯ Project Overview
 
 Climate temperature prediction is essential for agriculture, disaster management, environmental monitoring, renewable energy planning, and weather forecasting.
 
 Traditional numerical weather prediction methods require significant computational resources and may struggle to accurately capture localized temperature variations over space and time.
 
-The proposed implementation is a Conv3D encoder-decoder over seven daily temperature maps. Separate LSTM, CNN-LSTM, and Transformer implementations are included as comparison models. The `convlstm` identifier is a legacy compatibility name, not evidence of a recurrent ConvLSTM.
+The proposed implementation is a Conv3D encoder-decoder over seven daily temperature maps. Separate LSTM, CNN-LSTM, and Transformer implementations are included as comparison models. The `convlstm` identifier is a legacy compatibility name, not evidence of a ConvLSTM.
 
 The framework automates the complete forecasting pipeline, including:
 
@@ -78,7 +78,7 @@ The framework automates the complete forecasting pipeline, including:
 - Training-only normalization: mean 25.044549 degrees C, population std 10.995944 degrees C. Training-only 95th percentile 37.254114 degrees C; normalized loss threshold 1.110370 and extreme weight 5.
 - Train/source equality was verified. Validation/test date ranges, cadence, dimensions, and finite values were checked; exact value-by-value equality against the raw source remains unverified.
 
-## Corrected five-model comparison
+## Corrected six-model comparison
 
 RTX 4070, seed 42, batch size 16, Adam at 1e-4, 50 epochs per learned model. Checkpoints were selected by validation loss; test metrics use aligned 2025 predictions and targets. RMSE/MAE are degrees C; R-squared and Pearson r are separate dimensionless statistics.
 
@@ -89,8 +89,9 @@ RTX 4070, seed 42, batch size 16, Adam at 1e-4, 50 epochs per learned model. Che
 | CNN-LSTM | 18,049 | 50 | 48 | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
 | Conv3D encoder-decoder | 29,441 | 50 | 39 | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
 | Transformer | 275,105 | 50 | 36 | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
+| ConvLSTM baseline | 38,177 | 50 | 49 | 1.378530 | 0.882874 | 0.982487 | 0.991280 |
 
-The proposed code is Conv3D, not recurrent ConvLSTM. Conv3D modestly outperforms persistence in this single-seed test year. The manuscript values 1.8886/1.6200/0.9720/0.2477 are not verified results from this aligned test evaluation.
+The six-method aggregate table is in `experiments/reviewer_comparison_with_recurrent_convlstm_20261014/comparison_results.csv`; the new ConvLSTM checkpoint is in `experiments/reviewer_recurrent_convlstm_20261014/`. The proposed code is Conv3D, not ConvLSTM. The added ConvLSTM is a separate baseline. Conv3D RMSE is 1.364915 C versus 1.378530 C for ConvLSTM; the 0.013615 C difference is a single-seed result without a significance test. The earlier correlation value 0.2477 cannot be traced because its original predictions and metric code are unavailable; do not speculate about its cause.
 
 ## Verified visualization and paper figures
 
@@ -104,7 +105,7 @@ The script runs inference with the saved checkpoint; it does not retrain the mod
 
 Manuscript-ready figure exports and captions are in [`paper_figures/`](paper_figures/FIGURE_CAPTIONS.md). They are generated by [`generate_paper_figures.py`](paper_figures/generate_paper_figures.py). Figures are provided in PNG format. The [figure captions](paper_figures/FIGURE_CAPTIONS.md) identify what each plot shows and the data used.
 
-Final RMSE, MAE, and R² values in the corrected model comparison are calculated on the independent 2025 test set. Validation results are reported separately and are used for model/checkpoint selection. The daily normalization is a training-only z-score: convert Kelvin to Celsius, subtract the training-period mean, and divide by the training-period population standard deviation; apply those same training statistics to validation and test data. Non-finite values are rejected during preprocessing rather than silently imputed.
+Final RMSE, MAE, and RÂ² values in the corrected model comparison are calculated on the independent 2025 test set. Validation results are reported separately and are used for model/checkpoint selection. The daily normalization is a training-only z-score: convert Kelvin to Celsius, subtract the training-period mean, and divide by the training-period population standard deviation; apply those same training statistics to validation and test data. Non-finite values are rejected during preprocessing rather than silently imputed.
 
 ## Matched-date input-window ablation
 
@@ -128,7 +129,7 @@ Complete histories and checkpoints are in `experiments/reviewer_final_20261014/`
 .\.venv\Scripts\python.exe -u experiments\reviewer_final_20261014\run_window_ablation.py --output-dir experiments\reviewer_final_20261014\window_ablation_NEW_RUN
 ```
 
-# 🔬 Methodology
+# ðŸ”¬ Methodology
 
 The proposed implementation is a **Conv3D encoder-decoder**. It permutes `(B, 7, 1, 121, 141)` to Conv3D order `(B, 1, 7, 121, 141)`, applies two 3?3?3 Conv3D/ReLU layers with 32 channels and a 3?3?3 Conv3D decoder, then selects the last temporal index. It has 29,441 trainable parameters and no recurrent gates or cell state. The `convlstm` config value remains a compatibility alias; it does not describe the architecture.
 
@@ -157,66 +158,66 @@ observations remain important future work.
 
 ---
 
-# 📊 Results
+# ðŸ“Š Results
 
 The current data audit, metric definitions, unresolved source-equality checks, high-error point trace, and point-by-point response are in [reviewer_questions_answers.md](reviewer_questions_answers.md). The dated project change record is [changes.md](changes.md); command outputs and verification records are in [terminal_outputs.md](terminal_outputs.md). Historical metric tables in older notes are not results of the corrected run.
 
-# 📂 Project Structure
+# ðŸ“‚ Project Structure
 
 The project is organized into modular components for easy development, maintenance, and experimentation.
 
 ```text
 climate2/
-│
-├── models/                    # Deep Learning Models
-│   ├── convlstm.py
-│   ├── cnn_lstm.py
-│   ├── transformer.py
-│   └── model_utils.py
-│
-├── preprocessing/             # Data preprocessing pipeline
-│   ├── data_download/
-│   ├── merge_years.py
-│   ├── subset_region.py
-│   ├── split_by_year.py
-│   ├── resample_time.py
-│   ├── normalize.py
-│   ├── create_sequences.py
-│   └── main.py
-│
-├── training/                  # Model training and evaluation
-│   ├── train.py
-│   ├── validate.py
-│   ├── test.py
-│   ├── metrics.py
-│   └── losses.py
-│
-├── data_loader/               # PyTorch DataLoader
-│
-├── data/
-│   ├── raw/
-│   ├── interim/
-│   ├── processed/
-│   ├── metadata/
-│   └── splits/
-│
-├── experiments/               # Saved experiments
-├── outputs/                   # Predictions & Visualizations
-├── notebooks/                 # Jupyter notebooks
-│
-├── dashboard.py               # Streamlit Dashboard
-├── predict_by_date.py
-├── evaluate_model.py
-├── future_predict.py
-├── config.yaml
-├── main.py
-├── requirements.txt
-└── README.md
+â”‚
+â”œâ”€â”€ models/                    # Deep Learning Models
+â”‚   â”œâ”€â”€ convlstm.py
+â”‚   â”œâ”€â”€ cnn_lstm.py
+â”‚   â”œâ”€â”€ transformer.py
+â”‚   â””â”€â”€ model_utils.py
+â”‚
+â”œâ”€â”€ preprocessing/             # Data preprocessing pipeline
+â”‚   â”œâ”€â”€ data_download/
+â”‚   â”œâ”€â”€ merge_years.py
+â”‚   â”œâ”€â”€ subset_region.py
+â”‚   â”œâ”€â”€ split_by_year.py
+â”‚   â”œâ”€â”€ resample_time.py
+â”‚   â”œâ”€â”€ normalize.py
+â”‚   â”œâ”€â”€ create_sequences.py
+â”‚   â””â”€â”€ main.py
+â”‚
+â”œâ”€â”€ training/                  # Model training and evaluation
+â”‚   â”œâ”€â”€ train.py
+â”‚   â”œâ”€â”€ validate.py
+â”‚   â”œâ”€â”€ test.py
+â”‚   â”œâ”€â”€ metrics.py
+â”‚   â””â”€â”€ losses.py
+â”‚
+â”œâ”€â”€ data_loader/               # PyTorch DataLoader
+â”‚
+â”œâ”€â”€ data/
+â”‚   â”œâ”€â”€ raw/
+â”‚   â”œâ”€â”€ interim/
+â”‚   â”œâ”€â”€ processed/
+â”‚   â”œâ”€â”€ metadata/
+â”‚   â””â”€â”€ splits/
+â”‚
+â”œâ”€â”€ experiments/               # Saved experiments
+â”œâ”€â”€ outputs/                   # Predictions & Visualizations
+â”œâ”€â”€ notebooks/                 # Jupyter notebooks
+â”‚
+â”œâ”€â”€ dashboard.py               # Streamlit Dashboard
+â”œâ”€â”€ predict_by_date.py
+â”œâ”€â”€ evaluate_model.py
+â”œâ”€â”€ future_predict.py
+â”œâ”€â”€ config.yaml
+â”œâ”€â”€ main.py
+â”œâ”€â”€ requirements.txt
+â””â”€â”€ README.md
 ```
 
 ---
 
-# 🚀 Installation
+# ðŸš€ Installation
 
 ## Prerequisites
 
@@ -282,7 +283,7 @@ python -c "import xarray"
 
 ---
 
-# ⚙ Configuration
+# âš™ Configuration
 
 All project settings are managed through a single configuration file.
 
@@ -325,35 +326,35 @@ model:
 
 ---
 
-# 🌍 Data Pipeline
+# ðŸŒ Data Pipeline
 
 The preprocessing pipeline converts raw ERA5 climate data into model-ready tensors.
 
 ```text
 ERA5 Dataset
-      │
-      ▼
+      â”‚
+      â–¼
 Download Climate Data
-      │
-      ▼
+      â”‚
+      â–¼
 Merge Yearly Files
-      │
-      ▼
+      â”‚
+      â–¼
 Region Selection
-      │
-      ▼
+      â”‚
+      â–¼
 Train / Validation / Test Split
-      │
-      ▼
+      â”‚
+      â–¼
 Daily Resampling
-      │
-      ▼
+      â”‚
+      â–¼
 Normalization
-      │
-      ▼
+      â”‚
+      â–¼
 Sliding Window Sequence Generation
-      │
-      ▼
+      â”‚
+      â–¼
 Model Ready Dataset
 ```
 
@@ -427,7 +428,7 @@ python preprocessing/main.py --preprocess
 
 ---
 
-# 🧠 Available Models
+# ðŸ§  Available Models
 
 The project supports multiple deep learning architectures for spatiotemporal forecasting.
 
@@ -491,20 +492,21 @@ model:
 
 | Model name | Implemented structure | Trainable parameters |
 |---|---|---:|
-| `convlstm` | Conv3D encoder-decoder; no recurrence | 29,441 |
+| `convlstm` | Conv3D encoder-decoder; no recurrence (legacy name) | 29,441 |
+| `recurrent_convlstm` | One-layer ConvLSTM, 32 hidden channels | 38,177 |
 | `lstm` | Shared per-grid-cell LSTM | 4,513 |
 | `cnn_lstm` | Per-day CNN, pooled temporal LSTM, spatial decoder | 18,049 |
 | `transformer` | Pooled temporal Transformer encoder with spatial skip | 275,105 |
 
 Use the measured validation/test results above; no architecture is claimed to be universally best.
 
-# 💻 Usage
+# ðŸ’» Usage
 
 After completing the installation and preprocessing steps, you can train, evaluate, and visualize the model using the commands below.
 
 ---
 
-## 🚀 Train the Model
+## ðŸš€ Train the Model
 
 Train the configured Conv3D encoder-decoder. The `convlstm` model identifier remains for code compatibility.
 
@@ -531,7 +533,7 @@ All trained models are stored inside the `experiments/` directory.
 
 ---
 
-# 🔍 Evaluate the Model
+# ðŸ” Evaluate the Model
 
 Evaluate the trained model on the test dataset.
 
@@ -544,7 +546,7 @@ The evaluation reports:
 
 - Root Mean Square Error (RMSE)
 - Mean Absolute Error (MAE)
-- R² Score
+- RÂ² Score
 - Temperature prediction maps
 - Performance graphs
 
@@ -556,7 +558,7 @@ outputs/
 
 ---
 
-# 🌡 Make Temperature Predictions
+# ðŸŒ¡ Make Temperature Predictions
 
 Predict temperature for a specific day.
 
@@ -580,7 +582,7 @@ outputs/predictions/
 
 ---
 
-# 🔮 Future Forecasting
+# ðŸ”® Future Forecasting
 
 Generate forecasts for future days.
 
@@ -594,7 +596,7 @@ Example
 Input :
 Last 7 Days Temperature Maps
 
-↓
+â†“
 
 Output :
 
@@ -603,7 +605,7 @@ Next 30 Days Temperature Forecast
 
 ---
 
-# 📊 Interactive Dashboard
+# ðŸ“Š Interactive Dashboard
 
 Launch the Streamlit dashboard.
 
@@ -622,7 +624,7 @@ The dashboard provides
 
 ---
 
-# 🧪 Quick Testing
+# ðŸ§ª Quick Testing
 
 Generate a synthetic dataset.
 
@@ -650,7 +652,7 @@ python debug_predictions.py
 
 ---
 
-# 🔎 Data Validation
+# ðŸ”Ž Data Validation
 
 Validate the processed dataset.
 
@@ -674,7 +676,7 @@ These scripts verify
 
 ---
 
-# 🛠 Troubleshooting
+# ðŸ›  Troubleshooting
 
 ## Installation Issues
 
@@ -804,7 +806,7 @@ if GPU memory permits.
 
 ---
 
-# 📦 Dependencies
+# ðŸ“¦ Dependencies
 
 Major libraries used in this project.
 
@@ -829,7 +831,7 @@ pip install -r requirements.txt
 
 ---
 
-# 🚀 Deployment
+# ðŸš€ Deployment
 
 The project can be deployed using Streamlit.
 
@@ -867,25 +869,25 @@ streamlit run dashboard.py
 
 | Platform | Status |
 |----------|--------|
-| Streamlit Cloud | ✅ Recommended |
-| Render | ✅ Recommended |
-| Railway | ✅ Supported |
-| Docker | ✅ Supported |
-| Vercel | ❌ Not Recommended |
+| Streamlit Cloud | âœ… Recommended |
+| Render | âœ… Recommended |
+| Railway | âœ… Supported |
+| Docker | âœ… Supported |
+| Vercel | âŒ Not Recommended |
 
 > **Note:** Vercel is not suitable for this project because of its serverless execution limits and the large machine learning dependencies required by PyTorch and Streamlit.
 >
 > ---
 
-# 🗺️ Project Roadmap
+# ðŸ—ºï¸ Project Roadmap
 
 The project is continuously evolving with additional models, optimization techniques, and deployment capabilities.
 
-## ✅ Completed
+## âœ… Completed
 
 - [x] ERA5 Climate Data Integration
 - [x] Automated Data Preprocessing Pipeline
-- [x] Conv3D encoder-decoder implementation (not recurrent ConvLSTM)
+- [x] Conv3D encoder-decoder implementation (not ConvLSTM)
 - [x] Model Training & Validation Pipeline
 - [x] Temperature Prediction
 - [x] Model Evaluation Metrics
@@ -895,7 +897,7 @@ The project is continuously evolving with additional models, optimization techni
 
 ---
 
-## 🚧 In Progress
+## ðŸš§ In Progress
 
 - [ ] CNN-LSTM Performance Optimization
 - [ ] Transformer Model Training
@@ -905,7 +907,7 @@ The project is continuously evolving with additional models, optimization techni
 
 ---
 
-## 📌 Planned Features
+## ðŸ“Œ Planned Features
 
 - [ ] Multi-Step Temperature Forecasting
 - [ ] Extreme Weather Event Prediction
@@ -920,7 +922,7 @@ The project is continuously evolving with additional models, optimization techni
 
 ---
 
-# 📈 Performance Summary
+# ðŸ“ˆ Performance Summary
 
 | Metric | Value |
 |----------|--------|
@@ -930,17 +932,18 @@ The project is continuously evolving with additional models, optimization techni
 | Forecast Horizon | Next Day |
 | Framework | PyTorch |
 | Proposed Implementation | Conv3D encoder-decoder (`ConvLSTMModel`) |
-| Spatial Resolution | 121 × 141 Grid |
+| Spatial Resolution | 121 Ã— 141 Grid |
 | Data Format | NetCDF (.nc) |
 
 ---
 
-# 📚 Documentation
+# ðŸ“š Documentation
 
 Additional project documentation is available in the repository.
 
 | Document | Description |
 |----------|-------------|
+| `brief.md` | Conference-ready project brief, verified outcomes, and reviewer cross-question notes |
 | `reviewer_questions_answers.md` | Evidence-based reviewer responses, verified results, and unresolved items |
 | `changes.md` | Dated summary of project documentation and experiment updates |
 | `terminal_outputs.md` | Important commands, outputs, and exit statuses |
@@ -952,7 +955,7 @@ Additional project documentation is available in the repository.
 
 ---
 
-# 📓 Jupyter Notebooks
+# ðŸ““ Jupyter Notebooks
 
 The repository also includes notebooks for experimentation and debugging.
 
@@ -964,7 +967,7 @@ The repository also includes notebooks for experimentation and debugging.
 
 ---
 
-# 📜 Citation
+# ðŸ“œ Citation
 
 If you use this repository in your research or publications, please cite it as:
 
@@ -993,11 +996,11 @@ If you use this repository in your research or publications, please cite it as:
 
 ---
 
-# 🙏 Acknowledgements
+# ðŸ™ Acknowledgements
 
 This project was made possible through the support of the following open-source tools and datasets:
 
-- **ECMWF** – ERA5 Climate Reanalysis Dataset
+- **ECMWF** â€“ ERA5 Climate Reanalysis Dataset
 - **Copernicus Climate Change Service (C3S)**
 - **PyTorch**
 - **Xarray**
@@ -1013,7 +1016,7 @@ Special thanks to the open-source community for providing high-quality tools tha
 
 ---
 
-# 🤝 Contributing
+# ðŸ¤ Contributing
 
 Contributions are welcome!
 
@@ -1044,7 +1047,7 @@ Please ensure your code follows the existing project structure and coding style.
 
 ---
 
-# 🐛 Reporting Issues
+# ðŸ› Reporting Issues
 
 If you encounter a bug or have a feature request, please open a GitHub Issue with:
 
@@ -1056,7 +1059,7 @@ If you encounter a bug or have a feature request, please open a GitHub Issue wit
 
 ---
 
-# 📄 License
+# ðŸ“„ License
 
 This project is licensed under the **MIT License**.
 
@@ -1064,28 +1067,364 @@ See the `LICENSE` file for more details.
 
 ---
 
-# ⭐ Support the Project
+# â­ Support the Project
 
-If you find this repository useful for your research, learning, or development, please consider giving it a ⭐ on GitHub.
+If you find this repository useful for your research, learning, or development, please consider giving it a â­ on GitHub.
 
 Your support helps improve the project and encourages future development.
 
 ---
 
-## 👩‍💻 Author
+## ðŸ‘©â€ðŸ’» Author
 
 **Nidhi Dhameliya**
 
-M.Tech – Data Science & Machine Learning
+M.Tech â€“ Data Science & Machine Learning
 
-Deep Learning • Climate Informatics • Artificial Intelligence • Spatiotemporal Forecasting
+Deep Learning â€¢ Climate Informatics â€¢ Artificial Intelligence â€¢ Spatiotemporal Forecasting
 
 ---
 
 <div align="center">
 
-### ⭐ If you like this project, don't forget to star the repository! ⭐
+### â­ If you like this project, don't forget to star the repository! â­
 
-**Happy Forecasting! 🌍📈**
+**Happy Forecasting! ðŸŒðŸ“ˆ**
 
 </div>
+
+---
+
+# Updated project README
+
+This section reflects the current state of the project after the verification and audit work completed in the repository. It is appended to preserve the original historical README while documenting the actual project as it exists today.
+
+## 1. Project summary
+
+This repository implements a climate forecasting pipeline for predicting the next day's daily maximum 2 m air temperature over a regional grid of India and surrounding areas. The project combines ERA5 data preprocessing, sequence generation, deep learning model training, evaluation, and visualization.
+
+The core task is:
+
+- Input: the previous 7 daily temperature maps
+- Target: the next day's daily maximum temperature map
+- Region: 5°N to 35°N, 65°E to 100°E
+- Grid: 121 x 141 cells at 0.25° spacing
+- Variable: ERA5 2 m temperature (`t2m`) in Kelvin, converted to Celsius for modeling
+
+The project evaluates several baselines and model families, including LSTM, CNN-LSTM, Transformer, Conv3D encoder-decoder, and a recurrent ConvLSTM baseline.
+
+## 2. What is the actual architecture?
+
+The code class named `ConvLSTMModel` is a legacy compatibility name, but the implementation is not a recurrent ConvLSTM. It is a Conv3D encoder-decoder model built with 3D convolutions:
+
+- Input shape: `(B, 7, 1, 121, 141)`
+- Rearranged internally to `(B, 1, 7, 121, 141)`
+- Encoder: Conv3D 1 -> 32 channels, ReLU
+- Encoder: Conv3D 32 -> 32 channels, ReLU
+- Decoder: Conv3D 32 -> 1 channel
+- Final output: the last temporal slice is returned as the forecast map
+
+This means the study's main model is best described as a Conv3D spatiotemporal encoder-decoder, not a ConvLSTM. The `recurrent_convlstm` implementation is a separate baseline model.
+
+## 3. Dataset and preprocessing
+
+The project is built around ERA5 reanalysis data from the Copernicus Climate Data Store.
+
+### Data source
+
+- Variable: `2m_temperature` / `t2m`
+- Units: Kelvin in the source files
+- Temporal coverage: 2019-01-01 00:00 through 2025-12-31 23:00 UTC
+- Region: 5°N to 35°N and 65°E to 100°E
+- Daily target: maximum of the 24 complete hourly UTC observations in a day
+
+### Chronological split
+
+The project uses a year-based split without crossing split boundaries:
+
+| Split | Date range | Daily maps | 7-day windows |
+|---|---|---:|---:|
+| Train | 2019-2023 | 1,826 | 1,819 |
+| Validation | 2024 | 366 | 359 |
+| Test | 2025 | 365 | 358 |
+
+The current preprocessing rejects non-finite values rather than imputing them, and computes normalization using training-only statistics.
+
+### Normalization
+
+Temperature is converted from Kelvin to Celsius before modeling:
+
+- Mean: 25.044549 °C
+- Population std: 10.995944 °C
+- Formula: `z = (temp_C - mean_train) / std_train`
+
+These values are calculated from the training split only and then applied to validation and test data.
+
+## 4. Repository structure
+
+```text
+.
+├── README.md
+├── requirements.txt
+├── config.yaml
+├── main.py
+├── run_evaluation.py
+├── download_era5_region.py
+├── pipeline_utils.py
+├── data/
+│   ├── raw/
+│   ├── interim/
+│   ├── processed/
+│   └── README.md
+├── preprocessing/
+│   ├── subset_region.py
+│   ├── split_by_year.py
+│   ├── resample_time.py
+│   ├── normalize.py
+│   ├── create_sequences.py
+│   ├── merge_years.py
+│   └── data_download/
+├── data_loader/
+│   └── data_loader.py
+├── models/
+│   ├── convlstm.py
+│   ├── recurrent_convlstm.py
+│   ├── cnn_lstm.py
+│   ├── transformer.py
+│   ├── lstm_baseline.py
+│   └── model_utils.py
+├── training/
+│   ├── train.py
+│   ├── validate.py
+│   └── losses.py
+├── experiments/
+│   ├── latest/
+│   └── reviewer_* / comparison runs
+├── outputs/
+│   ├── visualizations/
+│   └── evaluation/
+├── paper_figures/
+├── paper_figures_explained/
+├── brief.md
+├── research.md
+├── solution.md
+├── RESULTS_SUMMARY.md
+├── RESULTS_SUMMARY_UPDATED.md
+├── change.md
+├── changes.md
+└── dashboard.py
+```
+
+## 5. Installation and setup
+
+### Create environment
+
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# Linux/macOS
+source .venv/bin/activate
+```
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configure Copernicus CDS credentials
+
+The project expects a valid ERA5 download setup via the `cdsapi` library.
+
+Create a `.cdsapirc` file in your home directory with:
+
+```text
+url: https://cds.climate.copernicus.eu/api/v2
+key: {YOUR_USER_ID}:{YOUR_API_KEY}
+```
+
+Then download the raw region data:
+
+```bash
+python download_era5_region.py
+```
+
+or:
+
+```bash
+python preprocessing/data_download/download_era5.py
+```
+
+## 6. Running the project pipeline
+
+The main orchestrator is:
+
+```bash
+python main.py --preprocess
+python main.py --train
+python main.py --test
+```
+
+You can also run individual stages:
+
+```bash
+python main.py --preprocess
+python main.py --train
+python main.py --test
+```
+
+The pipeline performs:
+
+1. regional subsetting
+2. yearly split and resampling
+3. normalization
+4. sequence generation
+5. model training
+6. model evaluation and metrics
+
+## 7. Model selection and supported model names
+
+The configuration file contains the active model name and training settings:
+
+```yaml
+model:
+  name: "convlstm"        # convlstm | cnn_lstm | transformer
+  hidden_dim: 32
+```
+
+Supported model values in `models/model_utils.py` are:
+
+- `convlstm`
+- `recurrent_convlstm`
+- `cnn_lstm`
+- `transformer`
+- `lstm`
+
+The default project model is the Conv3D encoder-decoder, but the class and config naming remain historically inconsistent (`convlstm`).
+
+## 8. Evaluation and metrics
+
+The repository evaluates models using:
+
+- RMSE
+- MAE
+- R²
+- Pearson correlation
+
+Model comparison results are stored under `experiments/` and generated evaluation assets under `outputs/`.
+
+### Current verified benchmark summary
+
+From the repository's final audited comparison, the key 2025 independent test results are:
+
+| Model | Test RMSE (°C) | Test MAE (°C) | Test R² | Pearson r |
+|---|---:|---:|---:|---:|
+| Persistence | 1.402716 | 0.897498 | 0.981867 | 0.990937 |
+| LSTM | 1.572731 | 1.016080 | 0.977206 | 0.988568 |
+| CNN-LSTM | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
+| Conv3D encoder-decoder | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
+| Transformer | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
+| ConvLSTM baseline | 1.378530 | 0.882874 | 0.982487 | 0.991280 |
+
+The current verified result shows the Conv3D encoder-decoder performing best among the learned architectures in this single-seed, held-out 2025 test comparison.
+
+## 9. Outputs and artifacts
+
+The repository stores model outputs and visualization artifacts in several folders:
+
+- `experiments/latest/` — most recent training artifacts
+- `experiments/reviewer_*` — benchmark and audit experiment runs
+- `outputs/visualizations/` — verified forecast diagrams and diagnostics
+- `paper_figures/` — manuscript-ready plots and figure captions
+- `paper_figures_explained/` — explanatory figures and speaking notes
+- `results/` — evaluation outputs generated by the evaluation scripts
+
+You can regenerate visual diagnostics with:
+
+```bash
+python outputs/visualizations/generate_verified_visualizations.py
+```
+
+Generate manuscript figures with:
+
+```bash
+python paper_figures/generate_paper_figures.py
+```
+
+## 10. Best practices for reproduction
+
+To reproduce the project reliably:
+
+1. Use the required ERA5 data and keep the raw files in `data/raw/era5/`
+2. Run preprocessing before training
+3. Check that the sample shapes follow `(N, T, C, H, W)` and target shapes `(N, C, H, W)`
+4. Keep the chronological split intact
+5. Use the same seed and training settings for comparison experiments
+6. Prefer the audited outputs in `experiments/reviewer_*` when reporting numbers
+
+## 11. Known project caveats
+
+This project is research-oriented and not a production weather forecasting system. Important limitations include:
+
+- It is trained on a single variable (`t2m`)
+- It evaluates against ERA5 reanalysis, not independent station observations
+- The documentation historically used legacy naming that sometimes described the model as ConvLSTM even though the code is Conv3D
+- The project uses a single test year and single-seed experiments for the main comparison
+
+The repository contains both historical notes and updated audited findings. For the most defensible reporting, use the current validated results in `RESULTS_SUMMARY.md` and `RESULTS_SUMMARY_UPDATED.md` rather than older draft values.
+
+## 12. Recommended commands for a fresh run
+
+```bash
+# 1) environment setup
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+
+# 2) download raw era5 data
+python download_era5_region.py
+
+# 3) preprocess
+python main.py --preprocess
+
+# 4) train
+python main.py --train
+
+# 5) evaluate
+python main.py --test
+# or
+python run_evaluation.py
+```
+
+## 13. Research framing
+
+This project is a reproducible research pipeline for regional climate forecasting. It is valuable for:
+
+- climate and weather forecasting experiments
+- spatiotemporal deep learning comparisons
+- ERA5-based data engineering and preprocessing
+- benchmarking sequence models on climate grids
+- visual analysis of forecast errors and spatial behavior
+
+## 14. License and attribution
+
+This project is released under the MIT License unless otherwise noted in the repository. The code depends on ERA5, Python scientific libraries, PyTorch, and supporting research tooling.
+
+For citation, see `CITATION.cff` and the accompanying project documentation in the repository.
+
+---
+
+## Final note
+
+This repository contains a large amount of historical, experimental, and revision tracking material. The correct way to interpret the project is:
+
+- raw ERA5 data are the authoritative source
+- current preprocessing and evaluation artifacts are the validated foundation
+- the main learned model is a Conv3D encoder-decoder, not a ConvLSTM
+- the recurrent ConvLSTM is a separate baseline
+- research findings should be reported using the verified metrics in the updated summary files
+
+This updated README is intentionally appended to the original one so the earlier project history remains visible while the current state is captured clearly and accurately.
+
+---

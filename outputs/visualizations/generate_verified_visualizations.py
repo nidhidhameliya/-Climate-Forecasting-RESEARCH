@@ -15,6 +15,7 @@ import torch
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
 EXPERIMENT = ROOT / "experiments" / "reviewer_final_20261014"
+COMPARISON = ROOT / "experiments" / "reviewer_comparison_with_recurrent_convlstm_20261014" / "comparison_results.csv"
 sys.path.insert(0, str(ROOT))
 from models.convlstm import ConvLSTMModel
 
@@ -114,7 +115,8 @@ def history_plot():
     items=[("convlstm","Conv3D","#2878A5",EXPERIMENT),
            ("cnn_lstm","CNN-LSTM","#4D9A87",EXPERIMENT),
            ("transformer","Transformer","#8064A2",EXPERIMENT),
-           ("lstm","LSTM","#E39138",ROOT/"experiments/reviewer_lstm_repaired_20261014")]
+           ("lstm","LSTM","#E39138",ROOT/"experiments/reviewer_lstm_repaired_20261014"),
+           ("recurrent_convlstm","ConvLSTM","#C65353",ROOT/"experiments/reviewer_recurrent_convlstm_20261014")]
     for key,label,color,directory in items:
         data=json.loads((directory/f"{key}_history.json").read_text(encoding="utf-8"));h=data["history"]
         ax.plot([r["epoch"] for r in h],[r["validation_loss"] for r in h],label=label,color=color,lw=1.5)
@@ -124,13 +126,13 @@ def history_plot():
 
 
 def method_comparison():
-    with (EXPERIMENT/"comparison_results.csv").open(encoding="utf-8-sig",newline="") as f:rows=list(csv.DictReader(f))
-    names=["Persistence","LSTM","CNN-LSTM","Conv3D","Transformer"]
+    with (COMPARISON).open(encoding="utf-8-sig",newline="") as f:rows=list(csv.DictReader(f))
+    names=["Persistence","LSTM","CNN-LSTM","Conv3D","Transformer","ConvLSTM"]
     fig,axes=plt.subplots(1,3,figsize=(9.2,3.3))
     for ax,key,title,ylim in zip(axes,["test_rmse","test_mae","test_r2"],["RMSE (°C)","MAE (°C)","R²"],[(0,1.7),(0,1.1),(.965,.99)]):
         values=[float(r[key]) for r in rows]
-        bars=ax.bar(np.arange(5),values,color=["#6B7280","#2878A5","#4D9A87","#E39138","#8064A2"])
-        ax.set_title(title,fontweight="bold");ax.set_xticks(np.arange(5),names,rotation=35,ha="right");ax.set_ylim(*ylim);ax.grid(axis="y",alpha=.45)
+        bars=ax.bar(np.arange(6),values,color=["#6B7280","#2878A5","#4D9A87","#E39138","#8064A2","#C65353"])
+        ax.set_title(title,fontweight="bold");ax.set_xticks(np.arange(6),names,rotation=35,ha="right");ax.set_ylim(*ylim);ax.grid(axis="y",alpha=.45)
         for bar,val in zip(bars,values):ax.text(bar.get_x()+bar.get_width()/2,bar.get_height()+(ylim[1]-ylim[0])*.018,f"{val:.3f}",ha="center",fontsize=7)
     fig.suptitle("Model comparison · held-out 2025 test set",x=.02,ha="left",fontweight="bold")
     fig.text(.02,.005,"358 aligned target dates · R² axis is truncated to show small differences · single seed",fontsize=7,color="#666666")

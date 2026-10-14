@@ -28,7 +28,7 @@ The manuscript's 1,089 sample figure matches an old `outputs/evaluation/train_re
 
 ## 4. Model architecture — Verified
 
-The proposed implementation is a Conv3D encoder-decoder, not ConvLSTM: code class `ConvLSTMModel` in `models/convlstm.py` contains no recurrence, gates, or cell state. Input Bx7x1x121x141 is permuted to Bx1x7x121x141. Conv3D(1,32,kernel 3x3x3,padding 1) gives Bx32x7x121x141 (896 parameters); ReLU; Conv3D(32,32,3x3x3,padding 1) same shape (27,680 parameters); ReLU; Conv3D(32,1,3x3x3,padding 1) gives Bx1x7x121x141 (865 parameters); last time index gives Bx1x121x141. Total 29,441 trainable parameters. The exact Figure 3 source was not provided in the project, so figure-specific differences cannot be confirmed. The proposed model differs from actual recurrent LSTM baselines; relabel the manuscript and redraw Figure 3 to match code.
+The proposed implementation is a Conv3D encoder-decoder, not ConvLSTM: code class `ConvLSTMModel` in `models/convlstm.py` contains no recurrence, gates, or cell state. Input Bx7x1x121x141 is permuted to Bx1x7x121x141. Conv3D(1,32,kernel 3x3x3,padding 1) gives Bx32x7x121x141 (896 parameters); ReLU; Conv3D(32,32,3x3x3,padding 1) same shape (27,680 parameters); ReLU; Conv3D(32,1,3x3x3,padding 1) gives Bx1x7x121x141 (865 parameters); last time index gives Bx1x121x141. Total 29,441 trainable parameters. A genuine ConvLSTM comparator has now been implemented separately in `models/recurrent_convlstm.py`. It has one recurrent layer with 32 hidden channels. At each time step, a 3x3 convolution on concatenated input and hidden state produces input/forget/output/candidate maps; sigmoid/tanh gates update hidden and cell states. After seven steps, a 1x1 Conv2d maps the final hidden state to the next-day grid. It has 38,177 parameters. The legacy `convlstm` key still selects the distinct 29,441-parameter Conv3D model. The historic Figure 3 source remains unavailable, so the new baseline should not be described as the exact historical Figure 3 implementation.
 
 Experiment config: seven input days, one-day horizon, hidden dim 32, batch 16, Adam lr 1e-4, seed 42, 50 epochs, weighted MSE threshold above, CUDA RTX 4070. Best checkpoint selected only by validation loss.
 
@@ -43,12 +43,13 @@ Fresh predictions and targets have matching shapes and were aligned against dail
 | CNN-LSTM | 50 | 48 | 1.400517 | 0.898668 | 0.981924 | 0.990928 |
 | Conv3D encoder-decoder | 50 | 39 | 1.364915 | 0.874530 | 0.982832 | 0.991407 |
 | Transformer | 50 | 36 | 1.403025 | 0.898712 | 0.981860 | 0.990936 |
+| ConvLSTM baseline | 50 | 49 | 1.378530 | 0.882874 | 0.982487 | 0.991280 |
 
-The selected Conv3D checkpoint was independently evaluated with `evaluate_model.py` on both validation and test: 359 aligned validation samples (2024-01-08 through 2024-12-31) and 358 aligned test samples (2025-01-08 through 2025-12-31). Validation metrics match the runner; test evaluator vs runner deltas were below 2.4e-8 for all four statistics. The reported manuscript quartet (1.8886, 1.6200, 0.9720, 0.2477) is not a current test result: old 1.8886/1.6200 came from an old train artifact; old 0.9720 is consistent with Pearson rather than R2 in an old test report; 0.2477 is unsupported. Do not report the old scores as comparable to this corrected run.
+The selected Conv3D checkpoint was independently evaluated with `evaluate_model.py` on both validation and test: 359 aligned validation samples (2024-01-08 through 2024-12-31) and 358 aligned test samples (2025-01-08 through 2025-12-31). Validation metrics match the runner; test evaluator vs runner deltas were below 2.4e-8 for all four statistics. The earlier r=0.2477 cannot be traced or explained from available evidence: its source predictions, exact targets, and calculation code are absent. Misalignment, aggregation differences, or a bug are possible explanations but none is verified. The old 0.9720 also cannot be paired with 0.2477 as metrics from the current aligned predictions. Withdraw the old pair unless its original evaluation artifacts are recovered. Current Conv3D test values are R2=0.982832 and Pearson r=0.991407.
 
 ## 6. Comparisons and window ablation — Verified
 
-Five-model results above use identical test dates. Persistence is a legitimate baseline and remains strong; Conv3D improves on it by 0.03780 C RMSE and 0.02297 C MAE on the full 358 test dates. These are single-seed results, not significance tests. The separate Conv3D 3/7/14-day ablation completed 50 epochs per window. The common test dates are 2025-01-15 through 2025-12-31 (351 targets), with each checkpoint selected by its own validation loss; the test set was not used for selection.
+Six-model results above use identical test dates. The added ConvLSTM used the same split and training protocol (seed 42, batch 16, Adam 1e-4, 50 epochs; validation-selected checkpoint). Conv3D RMSE is 1.364915 C versus 1.378530 C for ConvLSTM, a small 0.013615 C gap that is not significance-tested. Persistence is a legitimate baseline and remains strong; Conv3D improves on it by 0.03780 C RMSE and 0.02297 C MAE on the full 358 test dates. These are single-seed results, not significance tests. The separate Conv3D 3/7/14-day ablation completed 50 epochs per window. The common test dates are 2025-01-15 through 2025-12-31 (351 targets), with each checkpoint selected by its own validation loss; the test set was not used for selection.
 
 | Input days | Completed epochs | Best validation epoch | Common test RMSE C | MAE C | R2 | Pearson r |
 |---:|---:|---:|---:|---:|---:|---:|
@@ -88,15 +89,15 @@ The first two commands reproduce the corrected threshold and validate saved prep
 ## Unresolved issues
 
 - Validation/test hourly values have not been compared value-for-value with the verified raw source; their structural/finite checks passed.
-- The manuscript/Figure 3 source was unavailable for exact figure reconciliation.
-- Five-model comparison is one seed and one split; uncertainty across seeds is not estimated.
+- The original manuscript/Figure 3 source was unavailable for exact reconciliation; the newly added ConvLSTM is an explicit comparator, not a claim about the historical figure implementation.
+- Six-method comparison is one seed and one split; uncertainty across seeds is not estimated.
 - The 1,089 historical sample count's original selection rule is unknown.
 
 ## Recommended manuscript corrections
 
 1. Replace the 1,089 count with 1,819/359/358 train/validation/test sequences for the stated seven-day next-day protocol; give hourly and daily counts in the table above.
 2. Describe hourly-to-daily maximum aggregation and training-only Celsius z-score. Distinguish R2 from Pearson correlation.
-3. Rename the proposed architecture Conv3D encoder-decoder and correct Figure 3 to match the three Conv3D layers.
+3. Rename the proposed architecture Conv3D encoder-decoder, show its three Conv3D layers, and label the separately implemented ConvLSTM as a baseline.
 4. Replace historical metric quartet with the corrected aligned test table and disclose single-seed protocol and strong persistence baseline.
 5. State validation/test source-value equality as unverified until that comparison is run.
 
@@ -105,7 +106,7 @@ The first two commands reproduce the corrected threshold and validate saved prep
 1. **Dataset:** “We specify ERA5 hourly t2m in Kelvin, 2019-01-01 00:00 to 2025-12-31 23:00 UTC, over 5–35 N and 65–100 E at 0.25-degree resolution (121x141).”
 2. **Preprocessing:** “We use the maximum of each complete 24-hour UTC day, reject rather than impute non-finite values, and normalize Celsius daily maxima using training-only global mean and standard deviation. The inverse transform is corrected.”
 3. **Splits:** “The current seven-day/next-day protocol has 1,819 train, 359 validation, and 358 test sequences. The 1,089 figure came from a stale artifact whose subset provenance is unavailable.”
-4. **Architecture:** “The implementation is a 29,441-parameter Conv3D encoder-decoder, not a ConvLSTM. We will correct the method name and Figure 3.”
+4. **Architecture:** "The proposed model is a 29,441-parameter Conv3D encoder-decoder. We added a separate 38,177-parameter ConvLSTM baseline with one layer and 32 hidden channels. The historical Figure 3 source is unavailable, so we cannot confirm that it matches this baseline."
 5. **Metrics:** “We reevaluated aligned 2025 predictions and targets. The selected Conv3D obtains RMSE 1.364915 C, MAE 0.874530 C, R2 0.982832, and Pearson r 0.991407. R2 and correlation are reported as distinct statistics; prior unsupported historical values are withdrawn.”
 6. **Comparisons:** “We provide persistence, LSTM, CNN-LSTM, Conv3D, and Transformer comparisons with checkpoints selected on validation data only. We also report the 3/7/14-day Conv3D ablation on the same 351 test target dates.”
 7. **Error analysis:** “At 35 N, 65 E, source daily aggregation and prediction-date alignment were checked; the largest absolute error is traced to 2025-02-11. We do not modify held-out observations.”
@@ -113,7 +114,7 @@ The first two commands reproduce the corrected threshold and validate saved prep
 
 ## Artifact paths
 
-- Main comparison: `experiments/reviewer_final_20261014/comparison_results.json` and `.csv`.
+- Original five-method run: `experiments/reviewer_final_20261014/`; six-method merged table: `experiments/reviewer_comparison_with_recurrent_convlstm_20261014/comparison_results.csv`; ConvLSTM checkpoint and metrics: `experiments/reviewer_recurrent_convlstm_20261014/`.
 - Incremental completion ledger: `experiments/reviewer_final_20261014/completed_results.json`.
 - Checkpoints/histories: CNN-LSTM, Conv3D and Transformer are under `experiments/reviewer_final_20261014/`; the verified 50-epoch LSTM checkpoint/history are under `experiments/reviewer_lstm_repaired_20261014/`. The tracked six-epoch LSTM files in the main directory are preserved as historical partial artifacts and are not the checkpoint used for the reported LSTM metrics. Persistence has no checkpoint.
 - Extreme threshold: `data/processed/extreme_thresholds.json`.

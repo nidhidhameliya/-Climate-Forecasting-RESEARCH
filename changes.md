@@ -1,5 +1,14 @@
 # Project Change Log
 
+## 2026-10-14: ConvLSTM baseline added
+
+- Implemented a genuine one-layer ConvLSTM baseline (`models/recurrent_convlstm.py`): 32 hidden channels, 3?3 gate convolution, seven recurrent input steps, and 1?1 output projection (38,177 trainable parameters).
+- Trained for 50 epochs with seed 42, batch size 16, Adam at 1e-4, and validation-selected checkpoint (best epoch 49).
+- Independent 2025 test metrics: RMSE 1.378530 degrees C, MAE 0.882874 degrees C, R2 0.982487, Pearson r 0.991280. Compared with Conv3D RMSE 1.364915 degrees C and persistence 1.402716 degrees C; this single-seed gap is not significance-tested.
+- Updated `brief.md`, `research.md`, `reviewer_questions_answers.md`, README, and conference speaking notes. Created a six-method comparison CSV and regenerated comparison figures.
+- The historic `r=0.2477` source remains unavailable; its cause is not established and should not be guessed.
+
+
 This log summarizes material project updates. Detailed command output remains in `terminal_outputs.md`; experiment artifacts are preserved in their listed directories.
 
 ## 2026-10-14: Verified ERA5 forecasting and reviewer documentation

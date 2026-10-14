@@ -15,6 +15,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 EXP = ROOT / "experiments" / "reviewer_final_20261014"
+COMPARISON = ROOT / "experiments" / "reviewer_comparison_with_recurrent_convlstm_20261014" / "comparison_results.csv"
 sys.path.insert(0, str(ROOT / "paper_figures"))
 from generate_paper_figures import get_test_outputs  # actual saved checkpoint + test tensors
 
@@ -35,32 +36,47 @@ def save(fig, name: str) -> None:
 
 
 def architecture() -> None:
-    fig, ax = plt.subplots(figsize=(8.3, 4.2))
-    ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off")
-    blocks = [
-        (7.85, "Input: 7 daily temperature maps", "(B, 7, 1, 121, 141)", "#DCEEF4"),
-        (6.45, "Reorder dimensions for Conv3D", "(B, 1, 7, 121, 141)", "#E8EEF4"),
-        (4.95, "Conv3D 1 → 32 · kernel 3×3×3 · ReLU", "(B, 32, 7, 121, 141)", "#DCEEF4"),
-        (3.45, "Conv3D 32 → 32 · kernel 3×3×3 · ReLU", "(B, 32, 7, 121, 141)", "#E6F2E4"),
-        (1.95, "Conv3D 32 → 1 · kernel 3×3×3", "(B, 1, 7, 121, 141)", "#FFF0DC"),
-        (0.45, "Select final temporal slice → next-day map", "(B, 1, 121, 141)", "#F8E3E1"),
+    fig, axes = plt.subplots(1, 2, figsize=(10.4, 5.5))
+    fig.suptitle("Forecasting architectures evaluated", x=.02, ha="left",
+                 fontsize=13, fontweight="bold", color=NAVY)
+    panels = [
+        (axes[0], "Proposed model: Conv3D", "29,441 trainable parameters", [
+            ("Input: 7 daily maps", "(B, 7, 1, 121, 141)", "#DCEEF4"),
+            ("Reorder time/channel axes", "(B, 1, 7, 121, 141)", "#E8EEF4"),
+            ("Conv3D 1 -> 32; 3x3x3; ReLU", "32 feature channels", "#DCEEF4"),
+            ("Conv3D 32 -> 32; 3x3x3; ReLU", "32 feature channels", "#E6F2E4"),
+            ("Conv3D 32 -> 1; 3x3x3", "one output channel at each time index", "#FFF0DC"),
+            ("Select final time slice", "next-day map (B, 1, 121, 141)", "#F8E3E1"),
+        ]),
+        (axes[1], "Baseline: ConvLSTM", "38,177 trainable parameters; one layer, 32 hidden channels", [
+            ("Input sequence", "7 maps (B, 7, 1, 121, 141)", "#DCEEF4"),
+            ("For each of 7 time steps", "use current map and previous hidden state", "#E8EEF4"),
+            ("3x3 gate convolution", "33 input -> 128 maps (i, f, o, candidate)", "#DCEEF4"),
+            ("Update cell and hidden states", "sigmoid gates; tanh candidate", "#E6F2E4"),
+            ("Final hidden state h_7", "32 channels (B, 32, 121, 141)", "#FFF0DC"),
+            ("1x1 Conv2d projection", "next-day map (B, 1, 121, 141)", "#F8E3E1"),
+        ]),
     ]
-    for y, title, shape, color in blocks:
-        rect = patches.FancyBboxPatch((1.35, y), 7.3, 1.05,
-            boxstyle="round,pad=0.025,rounding_size=0.12", linewidth=1,
-            edgecolor="#9AA8B4", facecolor=color)
-        ax.add_patch(rect)
-        ax.text(5, y+.68, title, ha="center", va="center", fontweight="bold", color=NAVY, fontsize=9)
-        ax.text(5, y+.30, shape, ha="center", va="center", color="#355265", fontsize=8)
-    for y1, y2 in [(7.85,7.5),(6.45,6.0),(4.95,4.5),(3.45,3.0),(1.95,1.5)]:
-        ax.annotate("", xy=(5,y2), xytext=(5,y1), arrowprops={"arrowstyle":"-|>","lw":1.3,"color":GRAY})
-    ax.text(5, 9.55, "Implemented model architecture", ha="center", fontsize=13, fontweight="bold", color=NAVY)
-    ax.text(5, 9.18, "29,441 trainable parameters · no recurrent gates, hidden state, or cell state",
-            ha="center", fontsize=8.5, color=GRAY)
-    ax.text(5, .10, "This is a Conv3D encoder–decoder (legacy code name: ConvLSTMModel), not recurrent ConvLSTM.",
-            ha="center", fontsize=8, color=RED, fontweight="bold")
+    for ax, title, subtitle, blocks in panels:
+        ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off")
+        ax.text(5, 9.55, title, ha="center", fontsize=11, fontweight="bold", color=NAVY)
+        ax.text(5, 9.12, subtitle, ha="center", fontsize=8, color=GRAY)
+        ys = [7.95, 6.72, 5.49, 4.26, 3.03, 1.80]
+        for y, (label, shape, color) in zip(ys, blocks):
+            rect = patches.FancyBboxPatch((.45, y), 9.1, .88,
+                boxstyle="round,pad=0.025,rounding_size=0.10", linewidth=.8,
+                edgecolor="#9AA8B4", facecolor=color)
+            ax.add_patch(rect)
+            ax.text(5, y+.56, label, ha="center", va="center", fontweight="bold", color=NAVY, fontsize=8.2)
+            ax.text(5, y+.27, shape, ha="center", va="center", color="#355265", fontsize=7.2)
+        for y in [7.95, 6.72, 5.49, 4.26, 3.03]:
+            ax.annotate("", xy=(5, y-.15), xytext=(5, y-.35),
+                        arrowprops={"arrowstyle":"-|>","lw":1.1,"color":GRAY})
+    fig.text(.02, .015,
+        "The proposed implementation is Conv3D. The separately implemented ConvLSTM is the baseline; the historic Figure 3 source was unavailable for exact matching.",
+        fontsize=7.5, color=GRAY)
+    fig.tight_layout(rect=(0, .045, 1, .91), w_pad=1.4)
     save(fig, "figure_1_actual_architecture")
-
 
 def dataset_and_split() -> None:
     fig, (a,b)=plt.subplots(2,1,figsize=(8.2,3.7),gridspec_kw={"height_ratios":[1,1.15]})
@@ -145,10 +161,10 @@ def scatter_and_errors(pred: np.ndarray, target: np.ndarray) -> tuple[float,floa
 
 
 def method_comparison() -> None:
-    with (EXP/"comparison_results.csv").open(encoding="utf-8-sig",newline="") as f: rows=list(csv.DictReader(f))
-    names=["Persistence","LSTM","CNN–LSTM","Conv3D","Transformer"]
+    with (COMPARISON).open(encoding="utf-8-sig",newline="") as f: rows=list(csv.DictReader(f))
+    names=["Persistence","LSTM","CNN-LSTM","Conv3D","Transformer","ConvLSTM"]
     vals=[float(r["test_rmse"]) for r in rows]
-    colors=[GRAY,BLUE,TEAL,ORANGE,PURPLE]
+    colors=[GRAY,BLUE,TEAL,ORANGE,PURPLE,"#C65353"]
     fig,ax=plt.subplots(figsize=(7.2,3.6))
     bars=ax.bar(names,vals,color=colors,width=.67)
     ax.set_ylabel("Test RMSE (°C; lower is better)")

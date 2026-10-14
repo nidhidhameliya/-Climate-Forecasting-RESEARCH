@@ -3192,3 +3192,380 @@ Verification: values in the README and change log were copied from `experiments/
 Documentation integrity check: UTF-8 decode passed for all edited Markdown files; code fences balanced in README/reviewer answers/log/data guide/change log; removed duplicate CNN-LSTM heading; no source, revision, checkpoint, or prior experiment artifact modified.
 
 Exit code: 0
+
+
+elected device: cuda:0
+GPU: NVIDIA GeForce RTX 4070; PyTorch 2.5.1+cu121; CUDA runtime 12.1
+recurrent_convlstm epoch 1/50: train_loss=0.837803, val_loss=0.224333
+recurrent_convlstm epoch 2/50: train_loss=0.143002, val_loss=0.090828
+recurrent_convlstm epoch 3/50: train_loss=0.084547, val_loss=0.068658
+recurrent_convlstm epoch 4/50: train_loss=0.067915, val_loss=0.058402
+recurrent_convlstm epoch 5/50: train_loss=0.057551, val_loss=0.050908
+recurrent_convlstm epoch 6/50: train_loss=0.051252, val_loss=0.046784
+recurrent_convlstm epoch 7/50: train_loss=0.047317, val_loss=0.044243
+recurrent_convlstm epoch 8/50: train_loss=0.044244, val_loss=0.041075
+recurrent_convlstm epoch 9/50: train_loss=0.041954, val_loss=0.039084
+recurrent_convlstm epoch 10/50: train_loss=0.040258, val_loss=0.037605
+recurrent_convlstm epoch 11/50: train_loss=0.038893, val_loss=0.036722
+recurrent_convlstm epoch 12/50: train_loss=0.037550, val_loss=0.035595
+recurrent_convlstm epoch 13/50: train_loss=0.036263, val_loss=0.034369
+recurrent_convlstm epoch 14/50: train_loss=0.035048, val_loss=0.033513
+recurrent_convlstm epoch 15/50: train_loss=0.033831, val_loss=0.032171
+recurrent_convlstm epoch 16/50: train_loss=0.032534, val_loss=0.031087
+recurrent_convlstm epoch 17/50: train_loss=0.031208, val_loss=0.029880
+recurrent_convlstm epoch 18/50: train_loss=0.030056, val_loss=0.029239
+recurrent_convlstm epoch 19/50: train_loss=0.028854, val_loss=0.027893
+recurrent_convlstm epoch 20/50: train_loss=0.027713, val_loss=0.027391
+recurrent_convlstm epoch 21/50: train_loss=0.026591, val_loss=0.025814
+recurrent_convlstm epoch 22/50: train_loss=0.025636, val_loss=0.025128
+recurrent_convlstm epoch 23/50: train_loss=0.024824, val_loss=0.024295
+recurrent_convlstm epoch 24/50: train_loss=0.024151, val_loss=0.024270
+recurrent_convlstm epoch 25/50: train_loss=0.023378, val_loss=0.023068
+recurrent_convlstm epoch 26/50: train_loss=0.022886, val_loss=0.022717
+recurrent_convlstm epoch 27/50: train_loss=0.022466, val_loss=0.022693
+recurrent_convlstm epoch 28/50: train_loss=0.022093, val_loss=0.022033
+recurrent_convlstm epoch 29/50: train_loss=0.021570, val_loss=0.021762
+recurrent_convlstm epoch 30/50: train_loss=0.021276, val_loss=0.021301
+recurrent_convlstm epoch 31/50: train_loss=0.021045, val_loss=0.021105
+recurrent_convlstm epoch 32/50: train_loss=0.020762, val_loss=0.020881
+recurrent_convlstm epoch 33/50: train_loss=0.020576, val_loss=0.020613
+recurrent_convlstm epoch 34/50: train_loss=0.020361, val_loss=0.020671
+recurrent_convlstm epoch 35/50: train_loss=0.020214, val_loss=0.020306
+recurrent_convlstm epoch 36/50: train_loss=0.019987, val_loss=0.020299
+recurrent_convlstm epoch 37/50: train_loss=0.019961, val_loss=0.020481
+recurrent_convlstm epoch 38/50: train_loss=0.019752, val_loss=0.019921
+recurrent_convlstm epoch 39/50: train_loss=0.019566, val_loss=0.019837
+recurrent_convlstm epoch 40/50: train_loss=0.019476, val_loss=0.019827
+recurrent_convlstm epoch 41/50: train_loss=0.019389, val_loss=0.019684
+recurrent_convlstm epoch 42/50: train_loss=0.019262, val_loss=0.019571
+recurrent_convlstm epoch 43/50: train_loss=0.019301, val_loss=0.019924
+recurrent_convlstm epoch 44/50: train_loss=0.019263, val_loss=0.019588
+recurrent_convlstm epoch 45/50: train_loss=0.019090, val_loss=0.019463
+recurrent_convlstm epoch 46/50: train_loss=0.019109, val_loss=0.019531
+recurrent_convlstm epoch 47/50: train_loss=0.018989, val_loss=0.019698
+recurrent_convlstm epoch 48/50: train_loss=0.019009, val_loss=0.019336
+recurrent_convlstm epoch 49/50: train_loss=0.018967, val_loss=0.019270
+recurrent_convlstm epoch 50/50: train_loss=0.018862, val_loss=0.019301
+{
+  "protocol": {
+    "sequence_length": 7,
+    "forecast_horizon_days": 1,
+    "train_samples": 1819,
+    "validation_samples": 359,
+    "test_samples": 358,
+    "spatial_shape": [
+      121,
+      141
+    ],
+    "device": "cuda:0",
+    "seed": 42,
+    "metric_space": "same denormalized stored temperature scale for every model",
+    "normalization_unit": "degrees_Celsius",
+    "normalization_mean_celsius": 25.044549020486595,
+    "normalization_std_celsius": 10.99594436868629,
+    "loss_threshold_celsius": 37.25411376953127,
+    "loss_threshold_normalized": 1.1103698181499058,
+    "loss_threshold_metadata": {
+      "top_5_percent_celsius": 37.25411376953127,
+      "bottom_5_percent_celsius": -1.7535766601562273,
+      "quantile_method": "NumPy linear quantile (Hyndman-Fan Type 7)",
+      "scope": "training split only; daily maximum t2m over all grid cells and days",
+      "training_daily_records": 1826,
+      "training_grid_values": 31153386,
+      "training_date_range": [
+        "2019-01-01",
+        "2023-12-31"
+      ],
+      "input": "data/interim/train_daily.nc (t2m in K)",
+      "loss_weight": 5.0
+    },
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_runtime": "12.1",
+    "run_timestamp_utc": "2026-10-14T15:25:07.823038+00:00",
+    "epochs_requested": 50,
+    "output_directory": "C:\\Users\\25mdsml006\\Desktop\\deep_learning\\project\\climate\\climate2\\experiments\\reviewer_recurrent_convlstm_20261014"
+  },
+  "results": [
+    {
+      "model": "recurrent_convlstm",
+      "class": "RecurrentConvLSTM",
+      "trainable_parameters": 38177,
+      "epochs": 50,
+      "epochs_requested": 50,
+      "epochs_completed": 50,
+      "batch_size": 16,
+      "optimizer": "Adam",
+      "learning_rate": 0.0001,
+      "loss": "ExtremeWeightedMSE",
+      "training_seconds": 489.302,
+      "best_epoch": 49,
+      "best_validation_loss": 0.01926989517296138,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.8378030532284787,
+          "validation_loss": 0.22433297854402792
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.14300174370669483,
+          "validation_loss": 0.09082798449241597
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.08454694948567633,
+          "validation_loss": 0.06865772070444148
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.06791528141158715,
+          "validation_loss": 0.058402026234113655
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.05755083929551275,
+          "validation_loss": 0.05090763047337532
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.051251788117122235,
+          "validation_loss": 0.04678356728476027
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.047317366851003545,
+          "validation_loss": 0.04424263787982256
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.04424359276890755,
+          "validation_loss": 0.04107508856965148
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.04195359540417006,
+          "validation_loss": 0.03908424443848755
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.04025808107434658,
+          "validation_loss": 0.03760483261683713
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.03889323359257296,
+          "validation_loss": 0.03672177571317424
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.037550143701465505,
+          "validation_loss": 0.03559547225418298
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.03626306840267621,
+          "validation_loss": 0.03436923431961433
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.035047513465478755,
+          "validation_loss": 0.03351257668565149
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.033830822331079265,
+          "validation_loss": 0.03217094197221424
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.03253373627861341,
+          "validation_loss": 0.031086893509263577
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.031208465758122896,
+          "validation_loss": 0.02987950918791087
+        },
+        {
+          "epoch": 18,
+          "train_loss": 0.030056089456928402,
+          "validation_loss": 0.029239185559360878
+        },
+        {
+          "epoch": 19,
+          "train_loss": 0.028854070345691422,
+          "validation_loss": 0.027893311546548553
+        },
+        {
+          "epoch": 20,
+          "train_loss": 0.027712704858889704,
+          "validation_loss": 0.02739131685508334
+        },
+        {
+          "epoch": 21,
+          "train_loss": 0.026590537933403987,
+          "validation_loss": 0.02581358162443275
+        },
+        {
+          "epoch": 22,
+          "train_loss": 0.02563613323135334,
+          "validation_loss": 0.02512822215161894
+        },
+        {
+          "epoch": 23,
+          "train_loss": 0.024823835299333984,
+          "validation_loss": 0.02429505040788132
+        },
+        {
+          "epoch": 24,
+          "train_loss": 0.024150828046626167,
+          "validation_loss": 0.024269548892650917
+        },
+        {
+          "epoch": 25,
+          "train_loss": 0.023378427842991392,
+          "validation_loss": 0.023067646335972393
+        },
+        {
+          "epoch": 26,
+          "train_loss": 0.022885945396857302,
+          "validation_loss": 0.02271738830629898
+        },
+        {
+          "epoch": 27,
+          "train_loss": 0.022466457277340323,
+          "validation_loss": 0.022693121724802513
+        },
+        {
+          "epoch": 28,
+          "train_loss": 0.02209342916479759,
+          "validation_loss": 0.022032826410039612
+        },
+        {
+          "epoch": 29,
+          "train_loss": 0.02157027027651406,
+          "validation_loss": 0.021762458202631577
+        },
+        {
+          "epoch": 30,
+          "train_loss": 0.021276266281411313,
+          "validation_loss": 0.021300644006418144
+        },
+        {
+          "epoch": 31,
+          "train_loss": 0.021045416005347903,
+          "validation_loss": 0.021104894214026306
+        },
+        {
+          "epoch": 32,
+          "train_loss": 0.02076192038427842,
+          "validation_loss": 0.02088071997074977
+        },
+        {
+          "epoch": 33,
+          "train_loss": 0.020576479730376025,
+          "validation_loss": 0.020613065394370453
+        },
+        {
+          "epoch": 34,
+          "train_loss": 0.020361121327273156,
+          "validation_loss": 0.02067136570163395
+        },
+        {
+          "epoch": 35,
+          "train_loss": 0.02021376940568811,
+          "validation_loss": 0.020305985827808796
+        },
+        {
+          "epoch": 36,
+          "train_loss": 0.01998706299223398,
+          "validation_loss": 0.020299369145346725
+        },
+        {
+          "epoch": 37,
+          "train_loss": 0.019961116410661162,
+          "validation_loss": 0.020481382618131844
+        },
+        {
+          "epoch": 38,
+          "train_loss": 0.019751516734494975,
+          "validation_loss": 0.019920839928090572
+        },
+        {
+          "epoch": 39,
+          "train_loss": 0.019565511560230925,
+          "validation_loss": 0.01983655074044414
+        },
+        {
+          "epoch": 40,
+          "train_loss": 0.01947611393897157,
+          "validation_loss": 0.019826577409454014
+        },
+        {
+          "epoch": 41,
+          "train_loss": 0.01938884251081107,
+          "validation_loss": 0.019683966737078583
+        },
+        {
+          "epoch": 42,
+          "train_loss": 0.01926228452245133,
+          "validation_loss": 0.019571401340805965
+        },
+        {
+          "epoch": 43,
+          "train_loss": 0.019300537077677354,
+          "validation_loss": 0.01992432007809048
+        },
+        {
+          "epoch": 44,
+          "train_loss": 0.019263391595399172,
+          "validation_loss": 0.019588378905926063
+        },
+        {
+          "epoch": 45,
+          "train_loss": 0.01908961017697788,
+          "validation_loss": 0.019462546333670616
+        },
+        {
+          "epoch": 46,
+          "train_loss": 0.019108874445552367,
+          "validation_loss": 0.01953133985238231
+        },
+        {
+          "epoch": 47,
+          "train_loss": 0.01898859130839507,
+          "validation_loss": 0.019697903453007988
+        },
+        {
+          "epoch": 48,
+          "train_loss": 0.019008767415295568,
+          "validation_loss": 0.019335787905299145
+        },
+        {
+          "epoch": 49,
+          "train_loss": 0.018967051859618278,
+          "validation_loss": 0.01926989517296138
+        },
+        {
+          "epoch": 50,
+          "train_loss": 0.01886152091289037,
+          "validation_loss": 0.019300753574656403
+        }
+      ],
+      "validation": {
+        "rmse": 1.3713978052590978,
+        "mae": 0.8820029497146606,
+        "r2": 0.9837167859077454,
+        "correlation": 0.9918877052027177
+      },
+      "test": {
+        "rmse": 1.3785302187070654,
+        "mae": 0.8828738331794739,
+        "r2": 0.9824873805046082,
+        "correlation": 0.991279621560664
+      },
+      "checkpoint": "experiments\\reviewer_recurrent_convlstm_20261014\\recurrent_convlstm_best.pth",
+      "history_file": "experiments\\reviewer_recurrent_convlstm_20261014\\recurrent_convlstm_history.json"
+    }
+  ]
+}

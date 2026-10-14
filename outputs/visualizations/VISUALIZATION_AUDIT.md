@@ -10,7 +10,7 @@ Run `python outputs/visualizations/generate_verified_visualizations.py` from the
 - `test_prediction_map.png`: previous day, ERA5 target, fresh Conv3D prediction, and absolute error for a median-grid-RMSE 2025 test date.
 - `val_evaluation.png`: the same diagnostic for 2024 validation data; validation is for model/checkpoint selection, not the final test estimate.
 - `val_prediction_map.png`: a median-grid-RMSE 2024 validation example.
-- `model_comparison_test.png`: verified five-method comparison from `comparison_results.csv`, on 358 aligned 2025 targets.
+- `model_comparison_test.png`: verified six-method comparison from `experiments/reviewer_comparison_with_recurrent_convlstm_20261014/comparison_results.csv`, on 358 aligned 2025 targets.
 - `training_validation_curves.png`: actual epoch histories; the repaired 50-epoch LSTM log is used.
 - `window_seasonal_errors.png`: verified matched-date window ablation and 2025 seasonal errors.
 - `spatial_test_errors.png`: per-grid-cell signed bias and RMSE recomputed from the selected checkpoint over the 2025 test period.
