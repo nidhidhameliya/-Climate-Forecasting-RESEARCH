@@ -1,6 +1,6 @@
 # Explainable figures for the paper and conference
 
-These figures use the verified 2019–2025 ERA5 study files, saved model checkpoints, and the aligned 2025 test tensors. Each is available as vector PDF plus 600-dpi PNG and TIFF. The script `generate_relevant_figures.py` recreates them; it does not retrain models.
+These figures use the verified 2019–2025 ERA5 study files, saved model checkpoints, and the aligned 2025 test tensors. Each is available as a 600-dpi PNG. The script `generate_relevant_figures.py` recreates them; it does not retrain models.
 
 ## Suggested order and 20-second explanation
 

@@ -57,7 +57,6 @@ def calc_metrics(pred,target):
 
 def save(fig,name):
     fig.savefig(OUT/f"{name}.png",dpi=350,bbox_inches="tight",facecolor="white")
-    fig.savefig(OUT/f"{name}.pdf",bbox_inches="tight",facecolor="white")
     plt.close(fig)
 
 
@@ -184,8 +183,7 @@ def main():
     for name in ("train_evaluation.png","train_prediction_map.png"):
         path=OUT/name
         if path.exists():path.unlink()
-    for name in ("validation_evaluation.png","validation_evaluation.pdf",
-                 "validation_prediction_map.png","validation_prediction_map.pdf"):
+    for name in ("validation_evaluation.png","validation_prediction_map.png"):
         path=OUT/name
         if path.exists():path.unlink()
     print(f"Updated visualizations from checkpoint {EXPERIMENT/'convlstm_best.pth'}")

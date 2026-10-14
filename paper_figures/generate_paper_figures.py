@@ -42,10 +42,7 @@ plt.rcParams.update({
 
 
 def save(fig: plt.Figure, stem: str) -> None:
-    fig.savefig(OUT / f"{stem}.pdf", bbox_inches="tight", facecolor="white")
     fig.savefig(OUT / f"{stem}.png", bbox_inches="tight", facecolor="white", dpi=600)
-    fig.savefig(OUT / f"{stem}.tif", bbox_inches="tight", facecolor="white", dpi=600,
-                pil_kwargs={"compression": "tiff_lzw"})
     plt.close(fig)
 
 

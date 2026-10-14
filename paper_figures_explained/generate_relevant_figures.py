@@ -30,10 +30,7 @@ plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9,
 
 
 def save(fig, name: str) -> None:
-    fig.savefig(HERE / f"{name}.pdf", bbox_inches="tight", facecolor="white")
     fig.savefig(HERE / f"{name}.png", bbox_inches="tight", dpi=600, facecolor="white")
-    fig.savefig(HERE / f"{name}.tif", bbox_inches="tight", dpi=600, facecolor="white",
-                pil_kwargs={"compression": "tiff_lzw"})
     plt.close(fig)
 
 
