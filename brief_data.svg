@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240" role="img" aria-labelledby="title desc">
+  <title id="title">ERA5 study data at a glance</title>
+  <desc id="desc">Region, grid, period, daily aggregation, and train validation test split.</desc>
+  <rect width="900" height="240" rx="18" fill="#f4f8fb"/>
+  <text x="32" y="42" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#123047">ERA5 temperature data</text>
+  <g font-family="Arial,sans-serif">
+    <g><rect x="30" y="66" width="258" height="70" rx="12" fill="#dceef4"/><text x="48" y="94" font-size="14" fill="#436273">REGION &amp; GRID</text><text x="48" y="119" font-size="18" font-weight="700" fill="#123047">5–35°N · 65–100°E</text><text x="48" y="157" font-size="15" fill="#355265">121 × 141 cells · 0.25°</text></g>
+    <g><rect x="321" y="66" width="258" height="70" rx="12" fill="#e6f2e4"/><text x="339" y="94" font-size="14" fill="#436273">PERIOD &amp; VARIABLE</text><text x="339" y="119" font-size="18" font-weight="700" fill="#123047">2019–2025 · ERA5 t2m</text><text x="339" y="157" font-size="15" fill="#355265">Hourly K → daily maximum °C</text></g>
+    <g><rect x="612" y="66" width="258" height="70" rx="12" fill="#fff0dc"/><text x="630" y="94" font-size="14" fill="#436273">FORECAST TASK</text><text x="630" y="119" font-size="18" font-weight="700" fill="#123047">7 days → next day</text><text x="630" y="157" font-size="15" fill="#355265">One full temperature map</text></g>
+    <text x="32" y="204" font-size="14" font-weight="700" fill="#123047">CHRONOLOGICAL SPLIT</text>
+    <rect x="218" y="183" width="385" height="34" rx="7" fill="#2878a5"/><text x="410" y="206" text-anchor="middle" font-size="15" font-weight="700" fill="white">Train · 2019–2023</text>
+    <rect x="611" y="183" width="112" height="34" rx="7" fill="#4d9a87"/><text x="667" y="206" text-anchor="middle" font-size="14" font-weight="700" fill="white">Val · 2024</text>
+    <rect x="731" y="183" width="139" height="34" rx="7" fill="#e39138"/><text x="800" y="206" text-anchor="middle" font-size="14" font-weight="700" fill="white">Test · 2025</text>
+  </g>
+</svg>

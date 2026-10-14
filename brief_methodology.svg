@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="190" viewBox="0 0 920 190" role="img" aria-labelledby="title desc">
+  <title id="title">Next-day forecasting workflow</title>
+  <desc id="desc">ERA5 hourly data is processed into daily grids, seven days are passed to Conv3D, and the forecast is evaluated against persistence.</desc>
+  <rect width="920" height="190" rx="18" fill="#f4f8fb"/>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+    <g><rect x="20" y="48" width="145" height="88" rx="13" fill="#dceef4"/><text x="92" y="81" font-size="16" font-weight="700" fill="#123047">ERA5</text><text x="92" y="106" font-size="13" fill="#355265">Hourly t2m</text><text x="92" y="124" font-size="13" fill="#355265">Kelvin</text></g>
+    <g><rect x="203" y="48" width="155" height="88" rx="13" fill="#e6f2e4"/><text x="280" y="81" font-size="16" font-weight="700" fill="#123047">Preprocess</text><text x="280" y="106" font-size="13" fill="#355265">Region · daily max</text><text x="280" y="124" font-size="13" fill="#355265">normalize · sequence</text></g>
+    <g><rect x="396" y="48" width="155" height="88" rx="13" fill="#e9e4f4"/><text x="473" y="81" font-size="16" font-weight="700" fill="#123047">7 daily maps</text><text x="473" y="106" font-size="13" fill="#355265">121 × 141 grid</text><text x="473" y="124" font-size="13" fill="#355265">input window</text></g>
+    <g><rect x="589" y="48" width="155" height="88" rx="13" fill="#fff0dc"/><text x="666" y="81" font-size="16" font-weight="700" fill="#123047">Conv3D</text><text x="666" y="106" font-size="13" fill="#355265">Encoder–decoder</text><text x="666" y="124" font-size="13" fill="#355265">next-day map</text></g>
+    <g><rect x="782" y="48" width="118" height="88" rx="13" fill="#f8e3e1"/><text x="841" y="81" font-size="16" font-weight="700" fill="#123047">Evaluate</text><text x="841" y="106" font-size="13" fill="#355265">2025 test</text><text x="841" y="124" font-size="13" fill="#355265">vs persistence</text></g>
+  </g>
+  <g stroke="#6b8798" stroke-width="3" fill="none"><path d="M169 92h25m-8-8 8 8-8 8"/><path d="M362 92h25m-8-8 8 8-8 8"/><path d="M555 92h25m-8-8 8 8-8 8"/><path d="M748 92h25m-8-8 8 8-8 8"/></g>
+</svg>
